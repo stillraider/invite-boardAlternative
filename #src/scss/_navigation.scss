@@ -1,0 +1,210 @@
+.navigation {
+    position: fixed;
+    z-index: 50;
+
+    height: 100vh;
+
+    border-right: 1px solid #e0e2e7;
+    box-shadow: 2px 0 5px -3px #a5a5a5;
+    transition: left .1s ease-in-out;
+    background: white;
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        height: -webkit-fill-available;
+        min-width: 63px;
+
+        margin: 40px 0 0 10px;
+        padding: 65px 15px 0 5px;
+
+        li .navigation__list_items::before {
+            content: '\f013';
+        }
+
+        li .navigation__list_items::before, .navigation__header p::before {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+
+            transform: translate(-12.5px,-11px);
+            
+            font-family: 'Font Awesome 5 Free','Font Awesome 5 Brands';
+            font-size: 22px;
+            font-weight: 600;
+            color: #2a374d;
+        }
+
+        li {
+            cursor: pointer;
+            transition: background .05s ease-in-out;
+
+            &:hover {
+                background: #E6E5E5;
+            }
+        }
+
+        &-wrapper li:first-child .navigation__list_items::before {
+            content: '\f3fd';
+        }
+
+        &-wrapper li:nth-child(2) .navigation__list_items::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 50%;
+
+            transform: translate(-12.5px,-12px);
+
+            width: 23px;
+            height: 21px;
+
+            background: url(../img/nav/logo_cecelia_health.png) center/cover no-repeat;
+        }
+
+        &-wrapper li:nth-child(3) .navigation__list_items::before {
+            content: '\f469';
+        }
+
+        &-wrapper li:nth-child(5) .navigation__list_items::before {
+            content: '\f80d';
+        }
+
+        &-wrapper li:nth-child(6) .navigation__list_items::before {
+            content: '\f508';
+        }
+
+        &-wrapper li:nth-child(7) .navigation__list_items::before {
+            content: '\f500';
+        }
+
+        &-wrapper li:nth-child(8) .navigation__list_items::before {
+            content: '\f7f2';
+        }
+
+        &-wrapper li:nth-child(9) .navigation__list_items::before {
+            content: '\f590';
+        }
+
+        &-wrapper li:nth-child(10) .navigation__list_items::before {
+            content: '\f07c';
+        }
+
+        &-wrapper li:nth-child(11) .navigation__list_items::before {
+            content: '\f56c';
+        }
+
+        &_items {
+            position: relative;
+
+            display: inline-block;
+            width: 100%;
+
+            padding: 20px 0 20px 42px;
+
+            font-family: "Roboto-Regular";
+            font-size: 17px;
+            color: #1A1A1A;
+            user-select: none;
+            cursor: pointer;
+
+            &:nth-child(4) {
+                padding: 0;
+            }
+
+            &-inner {
+                height: 37px;
+
+                overflow: hidden;
+                transition: height .1s ease-in-out;
+            }
+
+            &-arrow {
+                display: block;
+                position: absolute;
+                top: 13px;
+                right: -7px;
+
+                width: 13px;
+                height: 15px;
+
+                transition: transform .1s ease-in-out;
+
+                &::before {
+                    content: '\f078';
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+
+                    font-family: 'Font Awesome 5 Free','Font Awesome 5 Brands';
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    &__header {
+        padding: 20px 0;
+
+        p::before {
+            content: '\f0ae';
+        }
+    
+        p {
+            padding-left: 42px;
+            position: relative;
+            user-select: none;
+        }
+
+        &:hover {
+            background: #e6e5e5;
+        }
+    }
+
+
+    &__footer_wrapper {
+        padding: 15px 0;
+    }
+
+    &__footer_link {
+        position: relative;
+        display: block;
+
+        padding-left: 42px;
+        color: #000;
+
+        &::before {
+            content: '\f590';
+            position: absolute;
+            top: 0;
+            left: 18px;
+            
+            font-family: 'Font Awesome 5 Free','Font Awesome 5 Brands';
+            font-size: 15px;
+            font-weight: 600;
+        }
+    }
+
+    &__burger {
+        position: absolute;
+        top: 130px;
+        right: -30px;
+
+        cursor: pointer;
+
+        &_item {
+            width: 20px;
+            height: 3px;
+            
+            margin-bottom: 3px;
+            background: #2A374D;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
