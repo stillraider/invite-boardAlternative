@@ -287,7 +287,7 @@ function NavigationBoard() {
     OpenMenuNavigation();
 
     function DisclosureNavigation() {
-        let navigationBurger = document.querySelector('.navigation__burger');
+        let headerBurger = document.querySelector('.header__burger');
         let navigationList = document.querySelector('.navigation__list');
         let inviteBoard = document.querySelector('.invite-board');
         let parentNavigation = navigationList.parentNode;
@@ -295,13 +295,14 @@ function NavigationBoard() {
     
         parentNavigation.style.left = -widthNavigation - 10 + 'px';
     
-        navigationBurger.addEventListener('click', OpenNav);
+        headerBurger.addEventListener('click', openNav);
     
-        function OpenNav() {
+        function openNav() {
             let offsetNavigation = (parentNavigation.style.left < '0' ? 0 : -widthNavigation - 10);
-            // navigationArrow.classList.toggle('leftArrow');
+
             parentNavigation.style.left = offsetNavigation + 'px';
             inviteBoard.style.marginLeft = offsetNavigation + widthNavigation + 10 + 'px';
+            headerBurger.classList.toggle('burger-active');
         }
     }
     
