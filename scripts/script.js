@@ -528,6 +528,7 @@ function ControlPhone() {
 
     headerPhone.addEventListener('click', function () {
         headerPhone.classList.toggle('phoneActive');
+        // letdgd
     })
 }
 
