@@ -153,7 +153,29 @@ svg {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  padding: 5px 30px;
+  padding: 5px 20px;
+}
+
+.header__phone {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.header__phone::before {
+  content: '\f3dd';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  -webkit-transform: translate(0, -10.5px);
+      -ms-transform: translate(0, -10.5px);
+          transform: translate(0, -10.5px);
+  font-family: 'Font Awesome 5 Free','Font Awesome 5 Brands';
+  font-weight: 600;
+  font-size: 20px;
+  color: #E6E6E6;
 }
 
 .header__wrap-item {
@@ -174,6 +196,7 @@ svg {
       -ms-flex-pack: center;
           justify-content: center;
   margin-right: 25px;
+  padding: 0 10px;
   cursor: pointer;
 }
 
@@ -399,6 +422,12 @@ svg {
   background: #F4F4F4;
 }
 
+.phoneActive::before {
+  content: '\f095';
+  left: 2.5px;
+  color: #E10E0E;
+}
+
 .burger-active .header__burger_item:first-child {
   -webkit-transform: rotate(-45deg) translate(-4px, 5px);
       -ms-transform: rotate(-45deg) translate(-4px, 5px);
@@ -560,13 +589,109 @@ svg {
   position: fixed;
   z-index: 50;
   height: 100vh;
+  width: 55px;
+  overflow: hidden;
   border-right: 1px solid #e0e2e7;
   -webkit-box-shadow: 2px 0 5px -3px #a5a5a5;
           box-shadow: 2px 0 5px -3px #a5a5a5;
-  -webkit-transition: left .1s ease-in-out;
-  -o-transition: left .1s ease-in-out;
-  transition: left .1s ease-in-out;
+  -webkit-transition: width .1s ease-in-out;
+  -o-transition: width .1s ease-in-out;
+  transition: width .1s ease-in-out;
   background: white;
+}
+
+.navigation .navigation__icon-items::before {
+  content: '\f0ae';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-12.5px, -11px);
+      -ms-transform: translate(-12.5px, -11px);
+          transform: translate(-12.5px, -11px);
+  font-family: 'Font Awesome 5 Free','Font Awesome 5 Brands';
+  font-size: 22px;
+  font-weight: 600;
+  color: #2a374d;
+}
+
+.navigation__list-wrapper li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 10px 0;
+}
+
+.navigation__list-wrapper li:nth-child(1) .navigation__icon-items::before {
+  content: '\f3fd';
+}
+
+.navigation__list-wrapper li:nth-child(2) .navigation__icon-items::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-12.5px, -12px);
+      -ms-transform: translate(-12.5px, -12px);
+          transform: translate(-12.5px, -12px);
+  width: 23px;
+  height: 21px;
+  background: url(../img/nav/logo_cecelia_health.png) center/cover no-repeat;
+}
+
+.navigation__list-wrapper li:nth-child(3) .navigation__icon-items::before {
+  content: '\f469';
+}
+
+.navigation__list-wrapper li:nth-child(5) .navigation__icon-items::before {
+  content: '\f80d';
+}
+
+.navigation__list-wrapper li:nth-child(6) .navigation__icon-items::before {
+  content: '\f508';
+}
+
+.navigation__list-wrapper li:nth-child(7) .navigation__icon-items::before {
+  content: '\f500';
+}
+
+.navigation__list-wrapper li:nth-child(8) .navigation__icon-items::before {
+  content: '\f7f2';
+}
+
+.navigation__list-wrapper li:nth-child(9) .navigation__icon-items::before {
+  content: '\f590';
+}
+
+.navigation__list-wrapper li:nth-child(10) .navigation__icon-items::before {
+  content: '\f07c';
+}
+
+.navigation__list-wrapper li:nth-child(11) .navigation__icon-items::before {
+  content: '\f56c';
+}
+
+.navigation .settings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 10px 0;
+}
+
+.navigation .settings .navigation__icon-items::before {
+  content: '\f013';
+}
+
+.navigation__icon-items {
+  position: relative;
+  display: block;
+  width: 55px;
+  height: 22px;
 }
 
 .navigation__list {
@@ -581,27 +706,13 @@ svg {
       -ms-flex-pack: justify;
           justify-content: space-between;
   height: -webkit-fill-available;
-  min-width: 63px;
-  margin: 40px 0 0 10px;
-  padding: 65px 15px 0 5px;
-}
-
-.navigation__list li .navigation__list_items::before {
-  content: '\f013';
-}
-
-.navigation__list li .navigation__list_items::before,
-.navigation__list .navigation__header p::before {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  -webkit-transform: translate(-12.5px, -11px);
-      -ms-transform: translate(-12.5px, -11px);
-          transform: translate(-12.5px, -11px);
-  font-family: 'Font Awesome 5 Free','Font Awesome 5 Brands';
-  font-size: 22px;
-  font-weight: 600;
-  color: #2a374d;
+  width: 222px;
+  margin-top: 40px;
+  padding-top: 65px;
+  -webkit-transition: width .15s ease-in-out;
+  -o-transition: width .15s ease-in-out;
+  transition: width .15s ease-in-out;
+  overflow: hidden;
 }
 
 .navigation__list li {
@@ -611,64 +722,15 @@ svg {
   transition: background .05s ease-in-out;
 }
 
-.navigation__list li:hover {
-  background: #E6E5E5;
-}
-
-.navigation__list-wrapper li:first-child .navigation__list_items::before {
-  content: '\f3fd';
-}
-
-.navigation__list-wrapper li:nth-child(2) .navigation__list_items::before {
-  content: '';
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  -webkit-transform: translate(-12.5px, -12px);
-      -ms-transform: translate(-12.5px, -12px);
-          transform: translate(-12.5px, -12px);
-  width: 23px;
-  height: 21px;
-  background: url(../img/nav/logo_cecelia_health.png) center/cover no-repeat;
-}
-
-.navigation__list-wrapper li:nth-child(3) .navigation__list_items::before {
-  content: '\f469';
-}
-
-.navigation__list-wrapper li:nth-child(5) .navigation__list_items::before {
-  content: '\f80d';
-}
-
-.navigation__list-wrapper li:nth-child(6) .navigation__list_items::before {
-  content: '\f508';
-}
-
-.navigation__list-wrapper li:nth-child(7) .navigation__list_items::before {
-  content: '\f500';
-}
-
-.navigation__list-wrapper li:nth-child(8) .navigation__list_items::before {
-  content: '\f7f2';
-}
-
-.navigation__list-wrapper li:nth-child(9) .navigation__list_items::before {
-  content: '\f590';
-}
-
-.navigation__list-wrapper li:nth-child(10) .navigation__list_items::before {
-  content: '\f07c';
-}
-
-.navigation__list-wrapper li:nth-child(11) .navigation__list_items::before {
-  content: '\f56c';
-}
-
 .navigation__list_items {
   position: relative;
   display: inline-block;
-  width: 100%;
-  padding: 20px 0 20px 42px;
+  min-width: -webkit-max-content;
+  min-width: -moz-max-content;
+  min-width: max-content;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
   font-family: "Roboto-Regular";
   font-size: 17px;
   color: #1A1A1A;
@@ -684,7 +746,7 @@ svg {
 }
 
 .navigation__list_items-inner {
-  height: 37px;
+  height: 42px;
   overflow: hidden;
   -webkit-transition: height .1s ease-in-out;
   -o-transition: height .1s ease-in-out;
@@ -695,7 +757,7 @@ svg {
   display: block;
   position: absolute;
   top: 13px;
-  right: -7px;
+  right: 0;
   width: 13px;
   height: 15px;
   -webkit-transition: -webkit-transform .1s ease-in-out;
@@ -716,15 +778,13 @@ svg {
 }
 
 .navigation__header {
-  padding: 20px 0;
-}
-
-.navigation__header p::before {
-  content: '\f0ae';
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 10px 0;
 }
 
 .navigation__header p {
-  padding-left: 42px;
   position: relative;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -732,12 +792,8 @@ svg {
           user-select: none;
 }
 
-.navigation__header:hover {
-  background: #e6e5e5;
-}
-
 .navigation__footer_wrapper {
-  padding: 15px 0;
+  padding: 15px 0 10px 0;
 }
 
 .navigation__footer_link {
@@ -1524,7 +1580,7 @@ body {
 
 .filter__text {
   margin-bottom: 13px;
-  font-family: "Roboto-Regular";
+  font-family: "Roboto-Bold";
   font-size: 17px;
   color: black;
 }
@@ -1647,7 +1703,7 @@ body {
 .users__info_email,
 .users__info_status,
 .users__info_role {
-  font-family: "Roboto-Bold";
+  font-family: "Roboto-Regular";
   font-size: 16px;
   overflow: hidden;
 }
@@ -2204,4 +2260,4 @@ body {
 
 .webp .header__logo{ background: url(../img/header/logo/logo_cecelia_health.webp) center/contain no-repeat; }
 
-.webp .navigation__list-wrapper li:nth-child(2) .navigation__list_items::before{ background: url(../img/nav/logo_cecelia_health.webp) center/cover no-repeat; }
+.webp .navigation__list-wrapper li:nth-child(2) .navigation__icon-items::before{ background: url(../img/nav/logo_cecelia_health.webp) center/cover no-repeat; }

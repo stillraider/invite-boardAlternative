@@ -282,28 +282,64 @@ function BoardManager() {
 }
 
 function NavigationBoard() {
-    DisclosureNavigation();
+    let disclosureNavigation = new ControlMenu();
+    let controlSubmenu = new ControlSubmenu();
+    
     ManagementActive();
-    OpenMenuNavigation();
-
-    function DisclosureNavigation() {
+    
+    function ControlMenu() {
+        let that = this;
         let headerBurger = document.querySelector('.header__burger');
         let navigationList = document.querySelector('.navigation__list');
+        let navIcon = document.querySelector('.navigation__icon-items');
         let inviteBoard = document.querySelector('.invite-board');
-        let parentNavigation = navigationList.parentNode;
-        let widthNavigation = navigationList.offsetWidth;
-    
-        parentNavigation.style.left = -widthNavigation - 10 + 'px';
-    
-        headerBurger.addEventListener('click', openNav);
-    
-        function openNav() {
-            let offsetNavigation = (parentNavigation.style.left < '0' ? 0 : -widthNavigation - 10);
 
-            parentNavigation.style.left = offsetNavigation + 'px';
-            inviteBoard.style.marginLeft = offsetNavigation + widthNavigation + 10 + 'px';
-            headerBurger.classList.toggle('burger-active');
+        let hideWidth = navIcon.offsetWidth;
+        let parentNavigation = navigationList.parentNode;
+        let showWidth = navigationList.offsetWidth;
+    
+        inviteBoard.style.marginLeft = hideWidth + 'px';
+    
+        headerBurger.addEventListener('click', ToggleMenu);
+    
+        function ToggleMenu() {
+            that.Enable(parentNavigation.offsetWidth < showWidth);
+            controlSubmenu.Enable(true);
         }
+        
+        this.Enable = function(isShow) {
+            let width = isShow ? showWidth : hideWidth;
+            parentNavigation.style.width = width + 'px';
+            inviteBoard.style.marginLeft = width + 'px';
+            if(isShow) headerBurger.classList.add('burger-active');
+            else headerBurger.classList.remove('burger-active');
+        }
+
+    }
+
+    function ControlSubmenu() {
+        let that = this;
+        let navInner = document.querySelector('.navigation__list_items-inner');
+        let ItemArrow = document.querySelector('.navigation__list_items-arrow');
+
+        let headerHeight = navInner.querySelector('.navigation__header').offsetHeight;
+        let footerHeight = navInner.querySelector('.navigation__footer').offsetHeight;
+
+        navInner.addEventListener('click', Toggle);
+        
+        function Toggle() {
+            console.log(navInner.offsetHeight);
+            console.log(headerHeight)
+            that.Enable(navInner.offsetHeight > headerHeight);
+            disclosureNavigation.Enable(true);
+        }
+        
+        this.Enable = function(isHide) {
+            navInner.style.height = (isHide ? headerHeight : headerHeight + footerHeight) +'px';
+            if(isHide) ItemArrow.classList.remove('rotateIcon');
+            else ItemArrow.classList.add('rotateIcon');
+        }
+
     }
     
     function ManagementActive() {
@@ -334,20 +370,7 @@ function NavigationBoard() {
         }
     }
 
-    function OpenMenuNavigation() {
-        let navigationInner = document.querySelector('.navigation__list_items-inner');
-        let ItemArrow = document.querySelector('.navigation__list_items-arrow');
 
-        let navigationHeader = navigationInner.querySelector('.navigation__header').offsetHeight;
-        let navigationFooter = navigationInner.querySelector('.navigation__footer').offsetHeight;
-
-        navigationInner.addEventListener('click', toggleEdit);
-
-        function toggleEdit() {
-            ItemArrow.classList.toggle('rotateIcon');
-            navigationInner.style.height = (navigationInner.offsetHeight > navigationHeader ? navigationHeader : navigationHeader + navigationFooter) +'px';
-        }
-    }
 }
 
 function OpenModalWindow() {
@@ -495,6 +518,16 @@ function movingIcon() {
         let modeWrapper = document.querySelector('.header__mode-wrapper');
         
         modeWrapper.style.display = 'block';
+    })
+}
+
+ControlPhone();
+
+function ControlPhone() {
+    let headerPhone = document.querySelector('.header__phone');
+
+    headerPhone.addEventListener('click', function () {
+        headerPhone.classList.toggle('phoneActive');
     })
 }
 
