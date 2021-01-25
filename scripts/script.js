@@ -280,65 +280,119 @@ function BoardManager() {
 }
 
 function NavigationBoard() {
-    let disclosureNavigation = new ControlMenu();
-    let controlSubmenu = new ControlSubmenu();
+    // let disclosureNavigation = new ControlMenu();
+    // let controlSubmenu = new ControlSubmenu();
 
+    ControlMenu();
     ManagementActive();
 
     function ControlMenu() {
-        let that = this;
+        // let that = this;
         let headerBurger = document.querySelector('.header__burger');
-        let navigationList = document.querySelector('.navigation__list');
-        let navIcon = document.querySelector('.navigation__icon-items');
+        let navList = document.querySelector('.navigation__list');
+        let navIcon = navList.querySelector('.navigation__icon-items');
+        // let naviItems = navList.querySelectorAll('.navigation__list_items');
         let inviteBoard = document.querySelector('.invite-board');
-
-        let hideWidth = navIcon.offsetWidth;
-        let parentNavigation = navigationList.parentNode;
-        let showWidth = navigationList.offsetWidth;
-
-        inviteBoard.style.marginLeft = hideWidth + 'px';
+        
+        inviteBoard.style.marginLeft = navIcon.offsetWidth + 'px';
 
         headerBurger.addEventListener('click', ToggleMenu);
 
         function ToggleMenu() {
-            that.Enable(parentNavigation.offsetWidth < showWidth);
-            controlSubmenu.Enable(true);
+            let navIconWidth = navIcon.offsetWidth;
+            // let naviItemsWidth = naviItems.offsetWidth;
+            let navListWidth = navList.offsetWidth;
+
+            if (navList.parentNode.offsetWidth < navListWidth) {
+                navList.parentNode.style.width = navListWidth + 'px';
+                inviteBoard.style.marginLeft = navListWidth + 'px';
+            }
+            
+            else {
+                navList.parentNode.style.width = navIconWidth + 'px';
+                inviteBoard.style.marginLeft = navIconWidth + 'px';
+            }
         }
 
-        this.Enable = function(isShow) {
-            let width = isShow ? showWidth : hideWidth;
+        // let navIcon = document.querySelector('.navigation__icon-items');
 
-            parentNavigation.style.width = width + 'px';
-            inviteBoard.style.marginLeft = width + 'px';
+        // let hideWidth = navIcon.offsetWidth;
+        // let parentNavigation = navigationList.parentNode;
+        // let showWidth = navigationList.offsetWidth;
 
-            if(isShow) headerBurger.classList.add('burger-active');
-            else headerBurger.classList.remove('burger-active');
-        }
+
+        // headerBurger.addEventListener('click', ToggleMenu);
+
+        // function ToggleMenu() {
+        //     Enable(parentNavigation.offsetWidth < showWidth);
+        //     controlSubmenu.Enable(true);
+        // }
+
+        // Enable = function(isShow) {
+        //     let width = isShow ? showWidth : hideWidth;
+
+        //     parentNavigation.style.width = width + 'px';
+        //     inviteBoard.style.marginLeft = width + 'px';
+
+        //     if(isShow) headerBurger.classList.add('burger-active');
+        //     else headerBurger.classList.remove('burger-active');
+        // }
     }
 
-    function ControlSubmenu() {
-        let that = this;
-        let navigation = document.querySelector('.navigation');
-        let navInner = navigation.querySelector('.navigation__list_items-inner');
-        let itemArrow = navigation.querySelector('.navigation__list_items-arrow');
-        let navHeader = navigation.querySelector('.navigation__header');
-        let navFooter = navigation.querySelector('.navigation__footer');
-        let headerHeight = navHeader.offsetHeight;
-        let footerHeight = navFooter.offsetHeight;
+    // function ControlMenu() {
+    //     let that = this;
+    //     let headerBurger = document.querySelector('.header__burger');
+    //     let navigationList = document.querySelector('.navigation__list');
+    //     let navIcon = document.querySelector('.navigation__icon-items');
+    //     let inviteBoard = document.querySelector('.invite-board');
 
-        navHeader.addEventListener('click', Toggle);
+    //     let hideWidth = navIcon.offsetWidth;
+    //     let parentNavigation = navigationList.parentNode;
+    //     let showWidth = navigationList.offsetWidth;
 
-        function Toggle() {
-            that.Enable(navInner.offsetHeight > headerHeight);
-            disclosureNavigation.Enable(true);
-        }
+    //     inviteBoard.style.marginLeft = hideWidth + 'px';
 
-        this.Enable = function(isHide) {
-            navInner.style.height = (isHide ? headerHeight : headerHeight + footerHeight) +'px';
-            if(isHide) itemArrow.classList.remove('rotateIcon');
-            else itemArrow.classList.add('rotateIcon');
-        }
-    }
+    //     headerBurger.addEventListener('click', ToggleMenu);
+
+    //     function ToggleMenu() {
+    //         that.Enable(parentNavigation.offsetWidth < showWidth);
+    //         controlSubmenu.Enable(true);
+    //     }
+
+    //     this.Enable = function(isShow) {
+    //         let width = isShow ? showWidth : hideWidth;
+
+    //         parentNavigation.style.width = width + 'px';
+    //         inviteBoard.style.marginLeft = width + 'px';
+
+    //         if(isShow) headerBurger.classList.add('burger-active');
+    //         else headerBurger.classList.remove('burger-active');
+    //     }
+    // }
+
+    // function ControlSubmenu() {
+    //     let that = this;
+    //     let navigation = document.querySelector('.navigation');
+    //     let navInner = navigation.querySelector('.navigation__list_items-inner');
+    //     let itemArrow = navigation.querySelector('.navigation__list_items-arrow');
+    //     let navHeader = navigation.querySelector('.navigation__header');
+    //     let navFooter = navigation.querySelector('.navigation__footer');
+    //     let headerHeight = navHeader.offsetHeight;
+    //     let footerHeight = navFooter.offsetHeight;
+
+    //     navHeader.addEventListener('click', Toggle);
+
+    //     function Toggle() {
+    //         that.Enable(navInner.offsetHeight > headerHeight);
+    //         disclosureNavigation.Enable(true);
+    //     }
+
+    //     this.Enable = function(isHide) {
+    //         navInner.style.height = (isHide ? headerHeight : headerHeight + footerHeight) +'px';
+    //         if(isHide) itemArrow.classList.remove('rotateIcon');
+    //         else itemArrow.classList.add('rotateIcon');
+    //     }
+    // }
 
     function ManagementActive() {
         let manage = document.querySelector('.manage');
@@ -347,9 +401,14 @@ function NavigationBoard() {
         let workflowsbutton = document.querySelector('.table-workflows__button');
         let board = document.querySelector('.board');
         let boardHome = board.querySelector('.board__home');
+        let dashboard = document.querySelector('.dashboard');
 
         manage.addEventListener('click', function () {
-            ChangeContent('block', 'none', 'none', 'none');
+            ChangeContent('block', 'none', 'none', 'none', 'none');
+        });
+
+        dashboard.addEventListener('click', function () {
+            ChangeContent('none', 'none', 'none', 'none','block');
         });
 
         boardHome.addEventListener('click', function () {
@@ -361,22 +420,24 @@ function NavigationBoard() {
         });
 
         workflows.addEventListener('click', function () {
-            ChangeContent('none', 'block', 'none', 'none');
+            ChangeContent('none', 'block', 'none', 'none', 'none');
         });
 
         user.addEventListener('click', function () {
-            ChangeContent('none', 'none', 'block', 'none');
+            ChangeContent('none', 'none', 'block', 'none', 'none');
         });
 
-        function ChangeContent(manageUse, workUse, inviteUse, boardUse) {
+        function ChangeContent(manageUse, workUse, inviteUse, boardUse, dashboardUse) {
             let management = document.querySelector('.management');
             let inviteContainer = document.querySelector('.invite-board__container');
             let tableWorkflows = document.querySelector('.table-workflows');
+            let dashboards = document.querySelector('.dashboards');
 
             management.style.display = manageUse;
             tableWorkflows.style.display = workUse;
             inviteContainer.style.display = inviteUse;
             board.style.display = boardUse;
+            dashboards.style.display = dashboardUse;
         }
     }
 }
