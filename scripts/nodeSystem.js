@@ -1,6 +1,8 @@
 var app = app || {};
 var qad = window.qad || {};
 
+var commandManager;
+
 InitQuestion();
 
 function InitQuestion() {
@@ -101,6 +103,7 @@ function InitQuestion() {
                 ry: '5'
             },
             '#header #play': {
+                event: 'element:play',
                 x: 113,
                 y: 2,
                 width: 16,
@@ -187,7 +190,7 @@ function InitQuestion() {
             },
             '#add-answer image': {
                 refX: '50%',
-                refX2: '-13',
+                refX2: '-13.5',
                 refDy: -31,
                 height: 26,
                 width: 26,
@@ -284,11 +287,27 @@ function InitQuestion() {
 
             this.onChangeOptions();
         },
-
         onChangeQuestion: function() {
-            var question = this.get('question');
-            this.attributes.ports.groups.in.attrs.circle.fill = question.active ? '#FFF0BC' : '#ffd6d6';
-            this.attr('#question-text/text', joint.util.measureText(question.text));
+            let question = this.get('question');
+            let newColor =  question.active ? '#FFF0BC' : '#ffd6d6';
+
+            // try {
+            //     console.log('v-----------------v')
+            //     console.log(this.getPorts()[0].attrs.circle.fill);
+            //     console.log(newColor);
+            //     console.log('-----------------')
+            // } catch{
+
+            // }
+
+            if(this.getPorts()[0].attrs == null || this.getPorts()[0].attrs.circle.fill != newColor)
+                this.portProp( this.getPorts()[0].id , 'attrs/circle/fill', newColor);
+            // this.getPorts()[0].attrs.circle.fill = newColor;
+
+
+            let questionText = joint.util.measureText(question.text);
+            if(questionText != this.attr('#question-text/text'))
+                this.attr('#question-text/text', questionText);
         },
 
         onChangeOptions: function() {
@@ -347,58 +366,63 @@ function InitQuestion() {
             var options = this.get('options') || [];
             var gap = paddingBottom || 20;
             var height = options.length * optionHeight + questionHeight + gap + (options.length * 2);
-            // var width = joint.util.measureText(this.get('question'), {
-            //     fontSize: this.attr('.question-text/fontSize')
-            // }).width;
             this.resize(235, height);
         },
 
         applyEdit: function(obj) {
+            commandManager.initBatchCommand();
             _.each(obj.remove, function(id) {
                 this.removePort(id);
             }.bind(this));
             this.set('options', obj.answers);
             this.set('question', obj.question);
+            commandManager.storeBatchCommand();
 
         },
 
         addOption: function(option) {
+            commandManager.initBatchCommand();
             var options = JSON.parse(JSON.stringify(this.get('options')));
             options.push(option);
             this.set('options', options);
+            commandManager.storeBatchCommand();
         },
 
         removeOption: function(id) {
-            // console.log("removeOption");
-
+            commandManager.initBatchCommand();
             var options = JSON.parse(JSON.stringify(this.get('options')));
             this.removePort(id);
             this.set('options', _.without(options, _.find(options, { id: id })));
+            commandManager.storeBatchCommand();
         },
 
-        changeOption: function(id, option) {
+        // changeOption: function(id, option) {
 
-            if (!option.id) {
-                option.id = id;
-            }
+        //     if (!option.id) {
+        //         option.id = id;
+        //     }
 
-            var options = JSON.parse(JSON.stringify(this.get('options')));
-            options[_.findIndex(options, { id: id })] = option;
-            this.set('options', options);
-        },
+        //     var options = JSON.parse(JSON.stringify(this.get('options')));
+        //     options[_.findIndex(options, { id: id })] = option;
+        //     this.set('options', options);
+        // },
 
         changeOptionActivity: function(id, isActive) {
+            commandManager.initBatchCommand();
             var options = JSON.parse(JSON.stringify(this.get('options')));
             options[_.findIndex(options, { id: id })].active = isActive;
             this.set('options', options);
+            commandManager.storeBatchCommand();
         },
 
         changeQuestionActivity: function(isActive) {
+            commandManager.initBatchCommand();
             // this.portProp( this.getPorts()[0].id , 'attrs/circle/fill', isActive ? '#FFF0BC' : '#ffd6d6');
             var question = JSON.parse(JSON.stringify(this.get('question')));
             question.active = isActive;
             this.set('question', question);
             // console.log(this.getPorts()[0].id);
+            commandManager.storeBatchCommand();
         }
     });
 }
@@ -561,14 +585,13 @@ app.Factory = {
         return link;
     },
 
-    createDialogJSON: function(graph, rootCell) {
+    createDialogJSON: function(graph, startID) {
 
         var dialog = {
-            root: undefined,
+            startNode: undefined,
             nodes: [],
             links: []
         };
-
         _.each(graph.getCells(), function(cell) {
 
             var o = {
@@ -581,125 +604,129 @@ app.Factory = {
                     o.question = cell.get('question');
                     o.options = cell.get('options');
                     dialog.nodes.push(o);
+                    if(!startID) {
+                        if(cell.get('start'))
+                            dialog.startNode = dialog.nodes.length - 1;
+                    }
+                    else if(startID == cell.id)
+                        dialog.startNode = dialog.nodes.length - 1;
                     break;
-                // case 'qad.Answer':
-                //     o.answer = cell.get('answer');
-                //     dialog.nodes.push(o);
-                //     break;
                 default: // qad.Link
                     o.source = cell.get('source');
                     o.target = cell.get('target');
                     dialog.links.push(o);
                     break;
             }
-
-            if (!cell.isLink() && !graph.getConnectedLinks(cell, { inbound: true }).length) {
-                dialog.root = cell.id;
-            }
         });
-
-        if (rootCell) {
-            dialog.root = rootCell.id;
-        }
 
         return dialog;
     }
 };
 
 
-qad.renderDialog = function(dialog, node) {
 
-    this.dialog = dialog;
+let modePlay = new ModePlay();
+modePlay.Initialize();
 
-    if (!node) {
+function ModePlay() {
+    let that = this;
+    let dialog = document.querySelector('.mode-start');
+    let answers = dialog.querySelector('.mode-start__answer');
+    let questionsText = dialog.querySelector('.mode-start__questions_text');
+    let close = dialog.querySelector('.mode-start__header_close');
 
-        for (var i = 0; i < dialog.nodes.length; i++) {
+    this.Initialize = function() {
+        close.onclick = closeDialog;
+    }
 
-            if (dialog.nodes[i].id === dialog.root) {
+    this.openDialog = function(graph, startID) {
+        let dataJSON = app.Factory.createDialogJSON(graph, startID);
+        if(!ValidConnected()) return;
+        ActivityDialog(true);
+        RenderDialog(dataJSON);
 
-                node = dialog.nodes[i];
-                break;
-            }
+        function ValidConnected() {
+            return dataJSON.nodes.length > 1 && dataJSON.links.length > 0;
         }
     }
 
-    if (!node) {
-
-        throw new Error('It is not clear where to go next.');
+    function closeDialog() {
+        ActivityDialog(false);
     }
 
-    if (!this.el) {
-        this.el = this.createElement('div', 'qad-dialog');
+    function ActivityDialog(isActive) {
+        dialog.style.display = isActive ? 'flex' : 'none';
     }
 
-    // Empty previously rendered dialog.
-    this.el.textContent = '';
+    function RenderDialog(dataNodes, node) {
+        that.dataNodes = dataNodes;
 
-    switch (node.type) {
+        if (!node) node = dataNodes.nodes[dataNodes.startNode];
+        RenderQuestion(node);
+        that.currentNode = node;
+    };
 
-        case 'qad.Question':
-            this.renderQuestion(node);
-            break;
-        case 'qad.Answer':
-            this.renderAnswer(node);
-            break;
-    }
+    function RenderQuestion(node) {
+        answers.textContent = '';
+        for (var i = 0; i < node.options.length; i++) {
+            answers.appendChild(RenderOption(node.options[i]));
+        }
+        questionsText.innerHTML = node.question.text;
+    };
 
-    this.currentNode = node;
+    function RenderOption(option) {
+        var elOption = CreateElement('div', 'mode-start__answer_item');
+        elOption.textContent = option.text;
+        let optionID = option.id;
 
-    return this.el;
-};
+        elOption.onclick = function() {
+            OnOptionClick(optionID);
+        }
 
-qad.createElement = function(tagName, className) {
+        return elOption;
+    };
 
-    var el = document.createElement(tagName);
-    el.setAttribute('class', className);
-    return el;
-};
+    function OnOptionClick(optionID) {
+        var outboundLink;
+        for (var i = 0; i < that.dataNodes.links.length; i++) {
 
-qad.renderOption = function(option) {
+            var link = that.dataNodes.links[i];
+            if (link.source.id === that.currentNode.id && link.source.port === optionID) {
+                outboundLink = link;
+                break;
+            }
+        }
 
-    var elOption = this.createElement('button', 'qad-option qad-button');
-    elOption.textContent = option.text;
-    elOption.setAttribute('data-option-id', option.id);
+        if (outboundLink) {
+            var nextNode;
+            for (var j = 0; j < that.dataNodes.nodes.length; j++) {
+                var node = that.dataNodes.nodes[j];
+                if (node.id === outboundLink.target.id) {
+                    nextNode = node;
+                    break;
+                }
+            }
+            if (nextNode) {
+                RenderDialog(that.dataNodes, nextNode);
+            }
+        }
+    };
 
-    var self = this;
-    elOption.addEventListener('click', function(evt) {
-
-        self.onOptionClick(evt);
-
-    }, false);
-
-    return elOption;
-};
-
-qad.renderQuestion = function(node) {
-
-    var elContent = this.createElement('div', 'qad-content');
-    var elOptions = this.createElement('div', 'qad-options');
-
-    for (var i = 0; i < node.options.length; i++) {
-
-        elOptions.appendChild(this.renderOption(node.options[i]));
-    }
-
-    var elQuestion = this.createElement('h3', 'qad-question-header');
-    elQuestion.innerHTML = node.question;
-
-    elContent.appendChild(elQuestion);
-    elContent.appendChild(elOptions);
-
-    this.el.appendChild(elContent);
-};
+    function CreateElement(tagName, className) {
+        var el = document.createElement(tagName);
+        el.setAttribute('class', className);
+        return el;
+    };
+}
 
 
 app.AppView = joint.mvc.View.extend({
 
-    el: '#app',
+    el: '.board',
 
     events: {
         'click .board__create-node': 'addQuestion',
-        'click #toolbar .preview-dialog': 'previewDialog',
+        'click .board__start': 'previewDialog',
         'click #toolbar .code-snippet': 'showCodeSnippet',
         'click #toolbar .load-example': 'loadExample',
         'click #toolbar .clear': 'clear'
@@ -801,8 +828,8 @@ app.AppView = joint.mvc.View.extend({
 
         this.paper = new joint.dia.Paper({
             el: this.$('#paper'),
-            width: '100%',
-            height: '100%',
+            width: 1500,//'100%',
+            height: 500,//'100%',
             gridSize: 10,
             snapLinks: {
                 radius: 10
@@ -832,12 +859,56 @@ app.AppView = joint.mvc.View.extend({
                 return magnet.getAttribute('magnet') !== 'passive';
             }
         });
+
+
+        var paperScroller = new joint.ui.PaperScroller({
+            autoResizePaper: true,
+            padding: 1000,
+            paper: this.paper,
+            cursor: 'grab'
+        });
+        paperScroller.lock();
+        this.paper.on('blank:pointerdown', paperScroller.startPanning);
+
+        // $('.load-example').on('click', function() {
+        //     paperScroller.zoom(0.2, { max: 4 });
+        // });
+
+
+        $('#app').append(paperScroller.render().el);
         // console.log(this.paper);
         // console.log(this.paper);
         this.paper.on('link:mouseenter', function(linkView) {
             this.removeTools();
             showLinkTools(linkView);
         })
+        this.paper.on('blank:mousewheel', function(evt, x, y, delta) {
+            evt.preventDefault();
+            ZoomScroll(x, y, delta);
+        })
+
+        this.paper.on('cell:mousewheel', function(cellView, evt, x, y, delta) {
+            evt.preventDefault();
+            ZoomScroll(x, y, delta);
+        })
+
+        $('.zoom-in').on('click', function() {
+            Zoom(1);
+        });
+
+        $('.zoom-out').on('click', function() {
+            Zoom(-1);
+        });
+
+        function ZoomScroll(x, y, delta) {
+            paperScroller.zoom(0.15 * delta, { min: 0.4, max: 2.5, grid: 0.1, ox: x, oy: y });
+        }
+
+        function Zoom(delta) {
+            paperScroller.zoom(0.4 * delta, { min: 0.4, max: 2.5});
+        }
+
+
 
         this.paper.on('link:mouseleave', function() {
             this.removeTools();
@@ -875,10 +946,12 @@ app.AppView = joint.mvc.View.extend({
         }
 
         function linkAction(link, linkView) {
+            commandManager.initBatchCommand();
             linkView.targetView.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
             linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
-            linkView.targetMagnet.style.fill = '#ffd6d6';
+            // linkView.targetMagnet.style.fill = '#ffd6d6';
             link.remove();
+            commandManager.storeBatchCommand();
         }
 
         // var linkView1 = CustomLinkView.findView(this.paper);
@@ -904,13 +977,16 @@ app.AppView = joint.mvc.View.extend({
             // console.log(this.get('options'));
             linkView.targetView.model.changeQuestionActivity(true);// attributes.ports.groups.in.attrs.circle.fill = '#FFF0BC';
             linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , true);
+            console.log('link:snap:connect');
             // console.log('link:snap:connect');
             // if(linkView.sourceMagnet != null)
             //     linkView.sourceMagnet.style.fill = '#FFF0BC';
             // if(linkView.targetMagnet != null)
-                linkView.targetMagnet.style.fill = '#FFF0BC';
+            // linkView.targetMagnet.style.fill = '#FFF0BC';
         })
         this.paper.on("link:snap:disconnect", function(linkView, evt, elementViewDisconnected, magnet, arrowhead) {
+            evt.stopPropagation();
+            // console.log(evt);
             // console.log('==========(2)============');
             // console.log(linkView);
             // console.log(evt);
@@ -918,17 +994,22 @@ app.AppView = joint.mvc.View.extend({
             // console.log(magnet);
             // console.log(arrowhead);
             // console.log('==========)2(============');
-            if(linkView.targetView == null){
+
+            // if(linkView.targetView == null){
                 // console.log(magnet);
+                // console.log(linkView);
+            if(linkView.targetView == null) {
                 elementViewDisconnected.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
                 linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
-                magnet.style.fill = '#ffd6d6';
             }
-            else {
-                linkView.targetView.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
-                lelementViewDisconnected.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
-                linkView.sourceMagnet.style.fill = '#ffd6d6';
-            }
+            console.log('link:snap:disconnect');
+                // magnet.style.fill = '#ffd6d6';
+            // }
+            // else {
+            //     linkView.targetView.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
+            //     lelementViewDisconnected.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
+            //     linkView.sourceMagnet.style.fill = '#ffd6d6';
+            // }
             // magnet.style.fill = '#ffd6d6';
             // if(linkView.sourceMagnet != null)
             //     linkView.sourceMagnet.style.fill = '#ffd6d6';
@@ -965,6 +1046,26 @@ app.AppView = joint.mvc.View.extend({
 
         this.graph = this.paper.model;
 
+
+
+        commandManager = new joint.dia.CommandManager({
+            graph: this.graph,
+            // cmdBeforeAdd: function(cmdName, cell, graph, options) {
+            //     options = options || {};
+            //     console.log('v-------------------------------------v');
+            //     console.log(cmdName);
+            //     console.log(cell);
+            //     console.log(graph);
+            //     console.log(options);
+            //     console.log(options.ignoreCommandManager);
+            //     console.log('-------------------------------------');
+            //     return !options.ignoreCommandManager;
+            // }
+        });
+
+        $('.undo').click(function() { commandManager.undo(); });
+        $('.redo').click(function() { commandManager.redo(); });
+
         // this.graph.on('change', function(cell) {
         //     console.log('change-graph');
         // })
@@ -978,6 +1079,11 @@ app.AppView = joint.mvc.View.extend({
             evt.stopPropagation();
             editNodeWindow.SetListItems(elementView.model);
         });
+
+        this.paper.on('element:play', function(elementView, evt, x, y) {
+            evt.stopPropagation();
+            modePlay.openDialog(this.graph, elementView.model.id);
+        }, this);
         // this.paper.on('link:delete', function(elementView, evt, x, y) {
         //     console.log('link:delete');
         // });
@@ -1184,19 +1290,7 @@ app.AppView = joint.mvc.View.extend({
     },
 
     previewDialog: function() {
-        var cell = this.selection.first();
-        var dialogJSON = app.Factory.createDialogJSON(this.graph, cell);
-        var $background = $('<div/>').addClass('background').on('click', function() {
-            $('#preview').empty();
-        });
-
-        $('#preview')
-            .empty()
-            .append([
-                $background,
-                qad.renderDialog(dialogJSON)
-            ])
-            .show();
+        modePlay.openDialog(this.graph);
     },
 
     clear: function() {
@@ -1278,7 +1372,7 @@ function EditNodeWindow() {
     let questionItem;
 
     let controlData = new ControlData();
-    let textEditor = new TextEditor();
+    // let textEditor = new TextEditor();
 
     this.Initialize = function() {
         CloneItem();
@@ -1288,9 +1382,6 @@ function EditNodeWindow() {
 
         function CloneItem() {
             let itemOriginal = containerItem.querySelector('.node-edit__inner-item');
-            void itemOriginal.querySelector('.node-edit__item_text').offsetWidth;
-            // widthTextOriginal = itemOriginal.querySelector('.node-edit__item_text').offsetWidth;
-            // console.log(widthTextOriginal);
             cloneItemMain = itemOriginal.cloneNode(true);
             Reset();
         }
@@ -1310,7 +1401,6 @@ function EditNodeWindow() {
 
         function CloseWindowButton() {
             сloseButton.onclick = function() {
-                textEditor.Discharge();
                 controlData.ApplyEdit();
                 ShowWindow(false);
             }
@@ -1370,25 +1460,66 @@ function EditNodeWindow() {
     }
 
     function InitEditItem(item, obj) {
-        let textVisual = item.querySelector('.node-edit__item_text');
+        let containerItem = item.querySelector('.node-edit__item'),
+        input = containerItem.querySelector('.node-edit__item_text'),
+        buttonSave = containerItem.querySelector('.node-edit__control_start'),
+        buttonCancel = containerItem.querySelector('.node-edit__control_cancel'),
+        lastText = '';
+
+        autosize(input);
 
         InitEvent();
         ApplyText(obj.text);
 
         function InitEvent() {
-            item.onclick = function (e) {
-                e.stopPropagation();
-                if(lastSelect != null)
-                    Unhighlight();
-                lastSelect = this;
-                Highlight();
-                textEditor.Edition(GetText(), ApplyText, Unhighlight);
+
+            input.addEventListener('autosize:resized', ChangeHeightItem);
+            buttonCancel.onclick = function(e) {
+                console.log('buttonCancel');
+                CancelEdit();
             }
+
+            input.onfocus = function(e) {
+                ItemClick(e);
+                buttonSave.style.right = '75px';
+                buttonCancel.style.right = '5px';
+                autosize.update(input);
+                ChangeHeightItem();
+                console.log('onfocus');
+            };
+
+            input.onblur = function(e) {
+                Unhighlight();
+                ApplyText(input.value);
+                buttonSave.style.right = '-75px';
+                buttonCancel.style.right = '-145px';
+                autosize.update(input);
+                ChangeHeightItem();
+                console.log('onblur');
+            };
+        }
+
+        function ItemClick() {
+            if(lastSelect != null)
+                Unhighlight();
+            lastSelect = item;
+            Highlight();
+            Edition();
+        }
+
+        function ChangeHeightItem() {
+            containerItem.style.height = input.offsetHeight + 'px';
         }
 
         function ApplyText(text) {
-            textVisual.innerText = cutText(text);
+            input.value = cutText(text);
+            lastText = obj.text;
             obj.text = text;
+        }
+
+        function CancelEdit() {
+            input.value = cutText(lastText);
+            obj.text = lastText;
         }
 
         function GetText() {
@@ -1399,12 +1530,14 @@ function EditNodeWindow() {
             item.classList.add('excretionItem');
         }
         function Unhighlight() {
-            lastSelect.classList.remove('excretionItem');
-            lastSelect = null;
+            item.classList.remove('excretionItem');
+        }
+
+        function Edition() {
+            input.value = GetText();
         }
 
         function cutText(text) {
-            widthTextOriginal = Math.max(widthTextOriginal, textVisual.offsetWidth);
             let lineHeight;
             let words = text.split(' ');
             let textElement;
@@ -1415,7 +1548,8 @@ function EditNodeWindow() {
             return readyText;
 
             function CreateTextElement() {
-                let allStyleText = getComputedStyle(textVisual);
+                let allStyleText = getComputedStyle(input);
+                widthTextOriginal = Math.max(widthTextOriginal, input.offsetWidth - (parseInt(allStyleText.paddingLeft) + parseInt(allStyleText.paddingRight)));
                 lineHeight = parseInt(allStyleText.lineHeight);
                 textElement = document.createElement("p");
 
@@ -1533,37 +1667,8 @@ function EditNodeWindow() {
             // console.log(this.data);
         }
     }
-
-    function TextEditor() {
-        let editor = document.querySelector('.editing');
-        let textArea = editor.querySelector('textarea');
-        let buttonSave = editor.querySelector('.editing__control_start');
-        let buttonCancel = editor.querySelector('.editing__control_cancel');
-        let unhighlightItem;
-
-        this.Edition = function(text, applyText, unhighlight) {
-            textArea.value = text;
-            unhighlightItem = unhighlight;
-
-            buttonSave.onclick = function() {
-                applyText(textArea.value);
-            }
-
-            buttonCancel.onclick = this.Discharge;
-        }
-
-        this.Discharge = function() {
-            textArea.value = '';
-            buttonSave.onclick = null;
-            buttonCancel.onclick = null;
-            if(unhighlightItem != null)
-                unhighlightItem();
-            unhighlightItem = null;
-        }
-    }
 }
 
 
 window.appView = new app.AppView;
 joint.setTheme('modern');
-autosize(document.querySelector('textarea'));

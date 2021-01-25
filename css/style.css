@@ -13,7 +13,7 @@
 *:after {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-} 
+}
 
 :focus,
 :active {
@@ -1718,21 +1718,6 @@ svg {
   height: 100%;
   min-height: 300px;
   border-radius: 4px;
-  overflow-y: auto;
-}
-
-.node-edit__wrapper-item::-webkit-scrollbar {
-  width: 8px;
-  margin-left: 10px;
-}
-
-.node-edit__wrapper-item::-webkit-scrollbar-track {
-  background: #C4C4C4;
-}
-
-.node-edit__wrapper-item::-webkit-scrollbar-thumb {
-  background: #F2F2F2;
-  cursor: default;
 }
 
 .node-edit__inner-item {
@@ -1740,7 +1725,6 @@ svg {
   margin-bottom: 14px;
   border: 4px solid white;
   border-radius: 4px;
-  cursor: pointer;
 }
 
 .node-edit__inner-item:last-child {
@@ -1748,6 +1732,11 @@ svg {
 }
 
 .node-edit__item {
+  height: 91px;
+  overflow: hidden;
+}
+
+.node-edit__item_text {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1757,7 +1746,6 @@ svg {
   width: 100%;
   min-height: 91px;
   padding: 12px 30px 12px 30px;
-  border-radius: 4px;
   font-size: 16px;
   line-height: 19px;
   color: #000000;
@@ -1767,6 +1755,42 @@ svg {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  overflow-y: hidden;
+}
+
+.node-edit__control {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  height: 50px;
+  padding: 5px 10px 0 0;
+  background: white;
+}
+
+.node-edit__control_start,
+.node-edit__control_cancel {
+  width: 65px;
+  height: 27px;
+  background: #E2F7DC;
+  border: 1px solid #000000;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+.node-edit__control_start {
+  margin-right: 19px;
+}
+
+.node-edit__control_cancel {
+  background: #FFD6D6;
 }
 
 .node-edit__remove-item {
@@ -1828,72 +1852,6 @@ svg {
   height: 17px;
   margin-left: -22px;
   background: url(../img/board/plus.svg) center/cover no-repeat;
-}
-
-.editing {
-  width: 48%;
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
-  height: fit-content;
-  -webkit-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
-          box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
-}
-
-.editing__header {
-  position: relative;
-  height: 46px;
-  background: #F2F2F2;
-}
-
-.editing__header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 15px;
-  width: 299px;
-  height: 46px;
-  background: url(../img/board/modernization.png) center/contain no-repeat;
-}
-
-.editing__textarea {
-  width: 100%;
-  height: 180px;
-  padding: 15px 20px;
-  resize: none;
-}
-
-.editing__control {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  height: 60px;
-  padding-left: 10px;
-  background: #F2F2F2;
-}
-
-.editing__control_start,
-.editing__control_cancel {
-  width: 83px;
-  height: 31px;
-  background: #E2F7DC;
-  border: 1px solid #000000;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  border-radius: 4px;
-  font-size: 15px;
-}
-
-.editing__control_start {
-  margin-right: 19px;
-}
-
-.editing__control_cancel {
-  background: #FFD6D6;
 }
 
 .mode-start {
@@ -12182,8 +12140,6 @@ body {
 .webp .navigation__list-wrapper li:nth-child(2) .navigation__icon-items::before{ background: url(../img/nav/logo_cecelia_health.webp) center/cover no-repeat; }
 
 .webp .board__zoom{ background: url(../img/board/zoom.webp) center/contain no-repeat; }
-
-.webp .editing__header::before{ background: url(../img/board/modernization.webp) center/contain no-repeat; }
 
 .webp .joint-selection.joint-theme-default .remove{ background-image: url(data:image/webp;base64,UklGRggBAABXRUJQVlA4WAoAAAAQAAAAHwAAHwAAQUxQSLwAAAABX0CQbRu6wYuwiIidVAIotm09ax4dHJYZsBhArxaHZSGR3bJw2N5bXGxkT87svvYyhIj+K3LbSGkPw7DwCrEc/MCqKD4vOOx5WOIx76D95+MtbvFJgH0rCdKI1zAKIj9hrKQLcAOYAyT2wCL7Cy+RbyDzDqTkADmZAbUvbG729yViUxn+ADZmQ8AKXOFIAFzhSABPyAEd/zT0FL2Rfg/6Pen3qN+z+g76O+nvqL6z/g/Uf6L9o46IiPrPBFZQOCAmAAAA0AIAnQEqIAAgAD6RRJ1KpaOioagIALASCWkAAD2joAD++M8awAA=); }
 
