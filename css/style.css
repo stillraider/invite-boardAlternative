@@ -119,7 +119,6 @@ svg {
 
 .header__headline_user::before,
 .header__headline_notifications::before,
-.header__headline_reference::before,
 .usermenu__img::before {
   position: absolute;
   left: 50%;
@@ -360,10 +359,14 @@ svg {
 }
 
 .header__headline_reference::before {
-  content: '\f059';
-  -webkit-transform: translate(-14px, -13px);
-      -ms-transform: translate(-14px, -13px);
-          transform: translate(-14px, -13px);
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 28px;
+  margin: -15px 0 0 -14px;
+  background: url(../img/header/phone.svg) center/cover no-repeat;
 }
 
 .header__headline_user {
@@ -711,6 +714,19 @@ svg {
       -ms-flex-align: center;
           align-items: center;
   padding: 10px 0;
+}
+
+.navigation .settings .navigation__icon-items {
+  height: 17px;
+}
+
+.navigation .settings .navigation__icon-items::before {
+  position: absolute;
+  content: '';
+  left: 18px;
+  width: 17px;
+  height: 17px;
+  background: url(../img/nav/Sett.svg) center/cover no-repeat;
 }
 
 .navigation__icon-items {
@@ -1190,6 +1206,7 @@ svg {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  border-bottom: 1px solid #B2B2B2;
 }
 
 .table-workflows__switch_item,
@@ -1203,7 +1220,8 @@ svg {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding: 13px 22px;
+  padding: 20px 0;
+  margin-right: 30px;
   font-family: "Roboto-Regular";
   font-size: 16px;
   line-height: 16px;
@@ -1213,14 +1231,16 @@ svg {
 
 .table-workflows .isActiveSwitch,
 .dashboards .isActiveSwitch {
-  background: #F2F2F2;
-  border-radius: 9px 9px 0px 0px;
+  color: #000000;
+  font-weight: 600;
+  border-bottom: 2px solid #4488FF;
 }
 
 .table-workflows__wrapper,
 .dashboards__wrapper {
   height: calc(100vh - 125px);
   padding: 42px 44px;
+  margin-top: 20px;
   background: #F2F2F2;
 }
 
@@ -1506,6 +1526,7 @@ svg {
 
 .dashboards__wrapper {
   padding: 0 !important;
+  margin-top: 20px;
   background: url(../img/Scr.png) center/contain no-repeat;
 }
 
