@@ -8,82 +8,91 @@ InitQuestion();
 function InitQuestion() {
     let headerHeight = 23;
     let bodyHeight = 71;
-    let optionHeight = 30;
-    let questionHeight = 130;
-    let paddingBottom = 35;
+    let optionHeight = 50;
+    let questionHeight = 212;
+    let paddingBottom = 100;
     // let width = 235;
 
     joint.dia.Element.define('qad.Question', {
         ports: {
             groups: {
-                in: {
+                'in': {
                     id: 'in',
                     position: {
                         name: 'left',
-                        args: { y: '60'}
+                        args: { x: '-3', y: '8'}
                     },
                     attrs: {
-                        circle: {
-                            magnet: 'passive',
-                            stroke: '#b6b6b6',
-                            strokeWidth: 2,
-                            fill: '#ffd6d6',
-                            r: 10
-                        },
-                        text: {
+                        '.back': {
+                            // magnet: 'passive',
                             pointerEvents: 'none',
-                            fontSize: 12,
+                            fill: '#ffd6d6',
+                            width: '24',
+                            height: '24',
+                            x: 30,
+                            rx: 4,
+                            ry: 4
                         },
-                        itemHighlight: {
-                            'fill': '#fff'
+                        '#port-in': {
+                            // pointerEvents: 'none',
+                            magnet: 'passive',
+                            fill: 'transparent',
+                            // x: -100,
+                            width: '50',
+                            height: '24'
+                        },
+                        '#highlight': {
+                            display: 'none',
+                            pointerEvents: 'none',
+                            fill: '#FEB663',
+                            width: '30',
+                            height: '30',
+                            y: -3,
+                            x: 27,
+                            rx: 7,
+                            ry: 7
+                        },
+                        image: {
+                            pointerEvents: 'none',
                         }
                     },
-                    markup: '<circle id="port-in"/>',
+                    markup: '<rect id="port-in"/>',
 
                     label: {
-                        // position: {
-                        //     args: { x: -6, y: -8}
-                        // },
-                        // attrs: {
-                        //     image: {
-                        //         fill: 'black'
-                        //     }
-                        // },
-                        markup: '<image width="13" height="8" style="transform: matrix(-1,0,0,1,6,-8)" xlink:href="img/board/fork.svg"></image>'
+                        markup: '<rect id="highlight" /><rect class="back"/><image width="14" height="10" style="transform: matrix(-1,0,0,1,50,7)" xlink:href="img/board/Union.svg"/>'
                     }
                 },
                 out: {
                     position: {
                         // name: 'right',
-                        args: { x: 235 }
+                        args: {x: 330 }
                     },
                     attrs: {
-                        circle: {
+                        '.back': {
                             magnet: true,
-                            stroke: '#b6b6b6',
                             fill: '#ffd6d6',
-                            strokeWidth: 2,
-                            r: 10
+                            width: '24',
+                            height: '24',
+                            rx: 4,
+                            ry: 4
                         },
-                        // rect: {
-                        //     pointerEvents: 'none',
-                        //     fill: 'transparent',
-                        //     width: 10,
-                        //     height: 20,
-                        //     x: 14,
-                        //     y: -10
-                        // },
+                        '#connector': {
+                            pointerEvents: 'none',
+                            fill: 'transparent',
+                            width: '75',
+                            height: '24'
+                        },
                         image: {
                             pointerEvents: 'none',
                         }
                     },
                     label: {
                         position: {
-                            args: { x: -6, y: -8 }
+                            args: { x: 5, y: 3 }
                         },
-                        markup: '<image width="12" height="8" xlink:href="img/board/fork.svg"></image>'
+                        markup: '<image width="14" height="10" xlink:href="img/board/Union.svg"/>'
                     },
-                    markup: '<circle/>'//<rect/>'
+                    markup: '<rect class="back"/><rect id="connector"/>'
                 }
             },
             // items: [{
@@ -94,168 +103,179 @@ function InitQuestion() {
             '.': {
                 magnet: false
             },
+            '#header-logo': {
+                display: 'block',
+            },
+            '#header-logo rect': {
+                fill: '#fff',
+                width: 105,
+                height: 50,
+                // y: '38',
+
+                rx: '6',
+                ry: '6',
+            },
+            '#header-logo text': {
+                fill: '#998A8A',
+                fontFamily: 'Nunito-Bold',
+                x: 42,
+                y: 27,
+                fontSize: 12,
+            },
+            '#header-logo #start': {
+                fill: '#998A8A',
+                fontFamily: 'Nunito-Black',
+                x: 42,
+                y: 27,
+                fontSize: 12,
+            },
+            '#header-logo #number': {
+                fill: '#998A8A',
+                fontFamily: 'Nunito-Bold',
+                x: 42,
+                y: 27,
+                fontSize: 12,
+            },
             '#main-back': {
-                fill: '#e2f7dc',
+                fill: '#fff',
                 refWidth: '100%',
                 refHeight: '100%',
+                y: 38,
+                refHeight2: '-38',
                 filter: 'url(#dropshadow)',
-                rx: '5',
-                ry: '5'
+                rx: '7',
+                ry: '7'
             },
             '#header #play': {
                 event: 'element:play',
-                x: 113,
-                y: 2,
+                refX: '50%',
+                refX2: '-8',
+                // x: 113,
+                y: 46,
                 width: 16,
                 height: 19,
                 cursor: 'pointer'
             },
             '#header #remove': {
                 event: 'element:delete',
-                x: 216,
-                y: 8,
+                refDx: -17,
+                y: 46,
                 width: 10,
                 height: 9,
                 cursor: 'pointer'
             },
-            '#header text': {
-                x: 7,
-                y: 16
+            '#header #untitle': {
+                x: 32,
+                y: 88,
+                fill: '#999999',
+                fontFamily: 'Nunito-Regular',
+                fontSize: 18,
+                lineHeight: '24',
+                letterSpacing: '-0.3'
             },
-            '#header-logo': {
-                display: 'block'
-            },
-            '#header-logo rect': {
-                fill: '#f2f2f2',
-                refX: '50%',
-                refX2: '-50',
-                y: '-25',
-                width: 100,
-                height: '50',
-                rx: '5',
-                ry: '5',
-                strokeWidth: 2,
-                stroke: 'black'
-            },
-            '#header-logo text': {
-                x: 86,
-                y: -7,
-                fontSize: 14,
-                fontWeight: 600
-            },
-            '#body rect': {
-                fill: '#e4f3ff',
-                y: headerHeight,
-                refWidth: '-6',
-                x: 3,
-                height: bodyHeight,
-            },
-            '#body #edit': {
-                event: 'element:edit',
-                x: 9,
-                y: 32,
-                width: 13,
-                height: 13,
-                cursor: 'pointer'
-            },
-            '#body #title-question': {
-                x: 25,
-                y: 53,
-                fontSize: 14,
-                fontWeight: 600
-            },
-            '#body #question-text': {
-                x: 25,
-                y: 73,
-                fontSize: 14
-            },
-            '#footer #title-footer': {
-                x: 25,
+            '#header #question-title': {
+                x: 32,
                 y: 116,
-                fontSize: 14,
-                fontWeight: 600
+                fontFamily: 'Nunito-SemiBold',
+                fontSize: 18,
+                lineHeight: 24,
+                // letterSpacing: '-0.3'
             },
-            '#footer rect': {
-                fill: '#B6B6B6',
-                x: 3,
-                y: headerHeight + bodyHeight + 34,
-                refWidth: '-6',
-                refHeight: -headerHeight - bodyHeight - 69,
-                z: -1
+            '#header rect': {
+                fill: '#F0E6E6',
+                y: 146,
+                refWidth: 1,
+                height: 2,
             },
-            '#add-answer text': {
-                refX: 31,
-                refDy: -14,
-                fontSize: 12,
+            '#body #title': {
+                x: 32,
+                y: 190,
+                fill: '#999999',
+                // fontFamily: 'Nunito-Regular',
+                fontSize: 18,
+                lineHeight: 24,
+                // letterSpacing: '-0.3'
             },
-            '#add-answer image': {
+            '#footer #edit rect': {
+                event: 'element:edit',
+                fill: '#1CCF64',
                 refX: '50%',
-                refX2: '-13.5',
-                refDy: -31,
-                height: 26,
-                width: 26,
+                refX2: '-42%',
+                refDy: '-80',
+                rx: '6',
+                ry: '6',
+                refWidth: '84%',
+                height: 48,
                 cursor: 'pointer'
             },
-
-            // '.btn-add-option': {
-            //     refX: 10,
-            //     refDy: -22,
-            //     cursor: 'pointer',
-            //     fill: 'white'
-            // },
-            '.btn-remove-option': {
-                height: 20,
-                width: 20,
-                x: 3,
-                y: 5,
-                // xAlignment: 10,
-                // yAlignment: 13,
-                cursor: 'pointer',
-                // fill: 'white'
+            '#footer #edit text': {
+                refX: '50%',
+                refDy: '-50',
+                fill: '#fff',
+                textAnchor: 'middle',
+                fontFamily: 'Nunito-Bold',
+                fontSize: 18,
+                pointerEvents: 'none',
+                // letterSpacing: '-0.3'
             },
-            '.options': {
-                refX: 0
-            },
-            // Text styling.
             text: {
-                fontFamily: 'Roboto-Regular'
+                fontFamily: 'Nunito-Regular',
+                letterSpacing: '-0.3'
             },
-            '.option-text': {
-                fontSize: 13,
-                // fontFamily: 'Roboto-Regular',
-                fill: '#4b4a67',
-                refX: 30,
-                yAlignment: 'middle'
+            // '.option': {
+            //     refX: '50%',
+            //     refX2: '-40%',
+            //     refWidth: '80%',
+            //     height: 50,
+            //     cursor: 'pointer'
+            // },
+            '.option .subtitle': {
+                fill: '#999999',
+                fontSize: 12,
+                x: 44,
+                yAlignment: 'middle',
+                fontFamily: 'Nunito-Bold',
             },
-            '.option-rect': {
-                fill: '#e2f7dc',
-                width: 235
+            '.option .title': {
+                fontSize: 14,
+                x: 44,
+                yAlignment: 'middle',
+                fontFamily: 'Nunito-Bold',
+            },
+            '.option rect': {
+                refX: '50%',
+                refX2: '-42%',
+                refWidth: '84%',
+                height: 52,
+                rx: '6',
+                ry: '6',
+                fill: '#fff',
+                strokeWidth: 1,
+                stroke: '#F0E6E6'
             }
         }
     }, {
         markup: [
+            '<rect id="main-back"/>',
             '<g id="header-logo">',
                 '<rect/>',
-                '<text>Start node</text>',
+                // '<text id="start">Start</text>',
+                '<text id="number">Node №1</text>',
             '</g>',
-            '<rect id="main-back" />',
             '<g id="header">',
-                '<text font-size="14">node #1</text>',
                 '<image id="play" xlink:href="img/board/Play.svg"/>',
                 '<image id="remove" xlink:href="img/board/cross.svg"/>',
+                '<text id="untitle"> Operator phrase: </text>',
+                '<text id="question-title"/>',
+                '<rect/>',
             '</g>',
             '<g id="body">',
-                '<rect/>',
-                '<image id="edit" xlink:href="img/board/pen.svg"/>',
-                '<text id="title-question"> Operator phrase: </text>',
-                '<text id="question-text"/>',
+                '<text id="title">Response:</text>',
             '</g>',
             '<g id="footer">',
-                '<rect/>',
-                '<text id="title-footer">Response:</text>',
-                '<g id="add-answer">',
-                    '<text>Add answer</text>',
-                    '<image xlink:href="img/board/add-answer.svg"/>',
+                '<g id="edit">',
+                    '<rect/>',
+                    '<text>Click to edit</text>',
                 '</g>',
             '</g>',
             '<g class="options"></g>',
@@ -263,9 +283,10 @@ function InitQuestion() {
 
         optionMarkup: [
             '<g class="option">',
-                '<rect class="option-rect" />',
-                '<image class="btn-remove-option" xlink:href="img/board/btn-remove.svg"/>',
-                '<text class="option-text"/>',
+                '<rect/>',
+                // '<image class="btn-remove-option" xlink:href="img/board/btn-remove.svg"/>',
+                '<text class="subtitle"/>',
+                '<text class="title"/>',
             '</g>'
         ].join(''),
 
@@ -283,7 +304,7 @@ function InitQuestion() {
             // this.on('change:optionHeight', this.autoresize, this);
 
             this.attr('.options/refY', questionHeight, { silent: true });
-            this.attr('#question-text/text', this.get('question').text, { silent: true });
+            this.attr('#question-title/text', this.get('question').text, { silent: true });
 
             this.onChangeOptions();
         },
@@ -299,15 +320,18 @@ function InitQuestion() {
             // } catch{
 
             // }
+            // console.log(this.getPorts()[0].attrs);
+            let portIn = this.getPorts()[0] || {};
 
-            if(this.getPorts()[0].attrs == null || this.getPorts()[0].attrs.circle.fill != newColor)
-                this.portProp( this.getPorts()[0].id , 'attrs/circle/fill', newColor);
+            console.log(portIn);
+            if(portIn.attrs == null || portIn.attrs['.back'].fill != newColor)
+                this.portProp( portIn.id , 'attrs/.back/fill', newColor);
             // this.getPorts()[0].attrs.circle.fill = newColor;
 
 
             let questionText = joint.util.measureText(question.text);
-            if(questionText != this.attr('#question-text/text'))
-                this.attr('#question-text/text', questionText);
+            if(questionText != this.attr('#question-title/text'))
+                this.attr('#question-title/text', questionText);
         },
 
         onChangeOptions: function() {
@@ -335,19 +359,21 @@ function InitQuestion() {
             var attrsUpdate = {};
             // var questionHeight = this.get('questionHeight');
 
-            _.each(options, function(option) {
+            _.each(options, function(option, index) {
                 // console.log(option);
 
                 var selector = '.option-' + option.id;
                 // console.log(option);
+                // console.log(index);
                 attrsUpdate[selector] = { transform: 'translate(0, ' + offsetY + ')', dynamic: true };
-                attrsUpdate[selector + ' .option-rect'] = { height: optionHeight, dynamic: true };
-                attrsUpdate[selector + ' .option-text'] = { text: joint.util.measureText(option.text), dynamic: true, refY: optionHeight / 2 };
+                attrsUpdate[selector + ' rect'] = { height: optionHeight, dynamic: true };
+                attrsUpdate[selector + ' .subtitle'] = { text: 'Option ' + (index + 1), dynamic: true, refY: 15 };
+                attrsUpdate[selector + ' .title'] = { text: joint.util.measureText(option.text), dynamic: true, refY: 33 };
 
                 offsetY += optionHeight;
-                offsetY += 2;
+                offsetY += 14;
 
-                var portY = offsetY - optionHeight / 2 + questionHeight - 2;
+                var portY = offsetY - optionHeight + questionHeight;
                 // console.log(this.getPorts()[0]);
                 if (!this.getPort(option.id)) {
                     // console.log("add");
@@ -355,8 +381,10 @@ function InitQuestion() {
                 } else {
                     // console.log("edit");
                     this.portProp(option.id, 'args/y', portY);
-                    this.portProp(option.id, 'attrs/circle/fill', option.active ? '#FFF0BC' : '#ffd6d6');
+                    this.portProp(option.id, 'attrs/.back/fill', option.active ? '#FFF0BC' : '#ffd6d6');
                 }
+
+
             }.bind(this));
             this.attr(attrsUpdate);
             this.autoresize();
@@ -364,9 +392,8 @@ function InitQuestion() {
 
         autoresize: function() {
             var options = this.get('options') || [];
-            var gap = paddingBottom || 20;
-            var height = options.length * optionHeight + questionHeight + gap + (options.length * 2);
-            this.resize(235, height);
+            var height = options.length * optionHeight + ((options.length - 1) * 14) + questionHeight + paddingBottom;
+            this.resize(400, height);
         },
 
         applyEdit: function(obj) {
@@ -529,17 +556,16 @@ app.SelectionView = joint.mvc.View.extend({
 app.Factory = {
 
     createQuestion: function(text, isStart) {
-
         let question = new joint.shapes.qad.Question({
             ports: {
                 items: isStart ? [] : [{ group: 'in'}]
             },
-            attrs: {
-                '#header-logo': {
-                    display: isStart ? 'block' : 'none'
-                }
-            },
-            position: { x: 400 - 50, y: 30 },
+            // attrs: {
+            //     '#header-logo': {
+            //         display: isStart ? 'block' : 'none'
+            //     }
+            // },
+            position: { x: 400, y: 250 },
             // size: { width: 100, height: 70 },
             question: { text: text, active: false},
             start: isStart,
@@ -559,15 +585,32 @@ app.Factory = {
             attrs: {
                 '.marker-target': {
                     d: 'M 10 0 L 0 5 L 10 10 z',
+                    // x: 10,
                     fill: '#6a6c8a',
                     stroke: '#6a6c8a'
                 },
                 '.connection': {
                     stroke: '#6a6c8a',
                     strokeWidth: 2
+                },
+                '.marker-arrowheads': {
+                    display: 'none'
+                },
+                '.tool-remove' : {
+                    display: 'none'
                 }
             }
         });
+        console.log(link);
+
+        // link.set('router', {
+        //     name: 'manhattan',
+        //     args: {
+        //         startDirections: ['top'],
+        //         endDirections: ['bottom'],
+        //         excludeTypes: ['myNamespace.MyCommentElement']
+        //     }
+        // });
         // joint.linkTools.
 
 
@@ -839,27 +882,46 @@ app.AppView = joint.mvc.View.extend({
             // defs: "test",
             linkPinning: false,
             multiLinks: false,
-            defaultLink:  function() {
-                return new joint.shapes.mapping.Link();
-            },
-            defaultRouter: { name: 'manhattan', args: { padding: 10, maxAllowedDirectionChange: 180, perpendicular: false, startDirections: ['right'], endDirections: ['left', 'right'] , maximumLoops: 2000}},
+            // defaultLink:  function() {
+            //     return new joint.shapes.mapping.Link();
+            // },
+            defaultLink: app.Factory.createLink(),
+            defaultRouter: { name: 'manhattan', args: { padding: 10, maxAllowedDirectionChange: 180, perpendicular: false, startDirections: ['right'], endDirections: ['left'] , maximumLoops: 3000 }},
             // defaultRouter: { name: 'manhattan', args: { padding: 50 }},
             // connectionStrategy: joint.connectionStrategies.pinRelative,
+            defaultConnectionPoint: {
+                name: 'boundary',
+                args: {
+                    sticky: true,
+                    // offset: -10
+                }
+            },
             defaultConnector: { name: 'rounded', args: { radius: 7} },
             validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
-                // Prevent linking from input ports.
+                // Запретить связывание с входных портов.
+                // return true;
+                // console.log(magnetT);
                 if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
-                // Prevent linking from output ports to input ports within one element.
+                // Запретить связывание выходных портов с входными портами в одном элементе.
                 if (cellViewS === cellViewT) return false;
-                // Prevent linking to input ports.
-                return (magnetT && magnetT.getAttribute('port-group') === 'in') || (cellViewS.model.get('type') === 'qad.Question' && cellViewT.model.get('type') === 'qad.Answer');
+                // Запретить связывание с входными портами.
+                return (magnetT && magnetT.getAttribute('port-group') === 'in') ||
+                        (cellViewS.model.get('type') === 'qad.Question' && cellViewT.model.get('type') === 'qad.Answer');
             },
             validateMagnet: function(cellView, magnet) {
                 // Note that this is the default behaviour. Just showing it here for reference.
+                // console.log(magnet);
                 return magnet.getAttribute('magnet') !== 'passive';
             }
         });
 
+        this.paper.off('cell:highlight')
+        this.paper.on("cell:highlight", function(cellView, el) {
+            el.parentNode.querySelector('#highlight').setAttribute('display', 'block');
+        })
+        this.paper.on("cell:unhighlight", function(cellView, el) {
+            el.parentNode.querySelector('#highlight').setAttribute('display', 'none');
+        })
 
         var paperScroller = new joint.ui.PaperScroller({
             autoResizePaper: true,
@@ -958,7 +1020,7 @@ app.AppView = joint.mvc.View.extend({
         // linkView1.addTools(toolsView);
 
         // console.log(this.paper.properties.defs);
-        this.paper.defs.innerHTML = '<filter id="dropshadow"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.25"/></filter>';
+        this.paper.defs.innerHTML = '<filter id="dropshadow"><feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#000000" flood-opacity="0.08"/></filter>';
 
         // [
         //     '<filter id="dropshadow">',
@@ -977,7 +1039,7 @@ app.AppView = joint.mvc.View.extend({
             // console.log(this.get('options'));
             linkView.targetView.model.changeQuestionActivity(true);// attributes.ports.groups.in.attrs.circle.fill = '#FFF0BC';
             linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , true);
-            console.log('link:snap:connect');
+            // console.log('link:snap:connect');
             // console.log('link:snap:connect');
             // if(linkView.sourceMagnet != null)
             //     linkView.sourceMagnet.style.fill = '#FFF0BC';
@@ -1002,7 +1064,7 @@ app.AppView = joint.mvc.View.extend({
                 elementViewDisconnected.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
                 linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
             }
-            console.log('link:snap:disconnect');
+            // console.log('link:snap:disconnect');
                 // magnet.style.fill = '#ffd6d6';
             // }
             // else {
@@ -1017,12 +1079,7 @@ app.AppView = joint.mvc.View.extend({
             //     linkView.targetMagnet.style.fill = '#ffd6d6';
         })
 
-        // this.paper.on("cell:highlight", function(linkView) {
-        //     console.log('cell:highlight');
-        // })
-        // this.paper.on("cell:unhighlight", function(linkView) {
-        //     console.log('cell:unhighlight');
-        // })
+
         // this.paper.on("link:connect", function(linkView) {
         //     console.log('link:snap:connect');
         // })
@@ -1133,9 +1190,9 @@ app.AppView = joint.mvc.View.extend({
     //                 if (!text) {
     //                     break;
     //                 }
-    //                 if (vTarget.hasClass('body') || V(text).hasClass('question-text')) {
+    //                 if (vTarget.hasClass('body') || V(text).hasClass('question-title')) {
 
-    //                     text = cellView.$('#question-text')[0];
+    //                     text = cellView.$('#question-title')[0];
     //                     cellView.textEditPath = 'question';
     //                     cellView.optionId = null;
 
@@ -1368,7 +1425,8 @@ function EditNodeWindow() {
     let nodeEdit = document.querySelector('.node-edit');
     let containerItem = nodeEdit.querySelector('.node-edit__wrapper-item');
     let сloseButton = nodeEdit.querySelector('.node-edit__header_btn');
-    let body = document.querySelector('body');
+    let saveButton = nodeEdit.querySelector('.node-edit__save');
+    // let body = document.querySelector('body');
     let questionItem;
 
     let controlData = new ControlData();
@@ -1401,6 +1459,10 @@ function EditNodeWindow() {
 
         function CloseWindowButton() {
             сloseButton.onclick = function() {
+                // controlData.ApplyEdit();
+                ShowWindow(false);
+            }
+            saveButton.onclick = function() {
                 controlData.ApplyEdit();
                 ShowWindow(false);
             }
@@ -1435,7 +1497,7 @@ function EditNodeWindow() {
 
         InitEvent();
         InitEditItem(cloneItem, obj);
-        CheckOutVisual();
+        // CheckOutVisual();
 
         function InitEvent() {
             cloneItem.querySelector('.node-edit__remove-item')
@@ -1443,20 +1505,21 @@ function EditNodeWindow() {
                 e.stopPropagation();
                 countItems--;
                 this.parentNode.remove();
-                CheckOutVisual();
+                // CheckOutVisual();
                 controlData.removeAnswer(obj.id);
             };
         }
 
-        function CheckOutVisual() {
-            if (countItems >= 3) containerItem.classList.add('activeScroll');
-            else containerItem.classList.remove('activeScroll');
-        }
+        // function CheckOutVisual() {
+        //     if (countItems >= 3) containerItem.classList.add('activeScroll');
+        //     else containerItem.classList.remove('activeScroll');
+        // }
     }
 
     function ShowWindow(isShow) {
-        nodeEdit.style.display = isShow ? 'flex' : 'none';
-        body.style.overflowY = isShow ? 'hidden' : 'scroll';
+        //TODO: Анимировать меню
+        nodeEdit.style.transform = isShow ? 'translateX(0px)' : 'translateX(764px)';
+        // body.style.overflowY = isShow ? 'hidden' : 'scroll';
     }
 
     function InitEditItem(item, obj) {
@@ -1483,16 +1546,18 @@ function EditNodeWindow() {
                 ItemClick(e);
                 buttonSave.style.right = '75px';
                 buttonCancel.style.right = '5px';
+                input.style.paddingBottom = '35px';
                 autosize.update(input);
                 ChangeHeightItem();
                 console.log('onfocus');
             };
-
+            
             input.onblur = function(e) {
                 Unhighlight();
                 ApplyText(input.value);
                 buttonSave.style.right = '-75px';
                 buttonCancel.style.right = '-145px';
+                input.style.paddingBottom = '10px';
                 autosize.update(input);
                 ChangeHeightItem();
                 console.log('onblur');
@@ -1507,7 +1572,8 @@ function EditNodeWindow() {
             Edition();
         }
 
-        function ChangeHeightItem() {
+        function ChangeHeightItem(indent) {
+            // input.style.paddingBottom = indent;
             containerItem.style.height = input.offsetHeight + 'px';
         }
 

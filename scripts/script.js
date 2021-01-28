@@ -398,7 +398,7 @@ function NavigationBoard() {
         let manage = document.querySelector('.manage');
         let workflows = document.querySelector('.workflows');
         let user = document.querySelector('.user');
-        let workflowsbutton = document.querySelector('.table-workflows__button');
+        let workflowsbutton = document.querySelector('.customers__button');
         let board = document.querySelector('.board');
         let boardHome = board.querySelector('.board__home');
         let dashboard = document.querySelector('.dashboard');
@@ -416,6 +416,7 @@ function NavigationBoard() {
         });
 
         workflowsbutton.addEventListener('click', function () {
+            document.querySelector('body').style.overflow = 'hidden';
             board.style.display = 'block';
         });
 
@@ -430,7 +431,7 @@ function NavigationBoard() {
         function ChangeContent(manageUse, workUse, inviteUse, boardUse, dashboardUse) {
             let management = document.querySelector('.management');
             let inviteContainer = document.querySelector('.invite-board__container');
-            let tableWorkflows = document.querySelector('.table-workflows');
+            let tableWorkflows = document.querySelector('.customers');
             let dashboards = document.querySelector('.dashboards');
 
             management.style.display = manageUse;
@@ -517,7 +518,7 @@ function OpenModalWindow() {
     ModalWindowWorkflows();
 
     function ModalWindowWorkflows() {
-        let tableItem = document.querySelectorAll('.table-workflows__item_info');
+        let tableItem = document.querySelectorAll('.customers__item_info');
         let windowWorkFlows = document.querySelector('.window-workFlows');
 
         for (let i = 0; i < tableItem.length; i++) {
@@ -535,7 +536,7 @@ function OpenModalWindow() {
         }
 
         function eventHideLocation(e) {
-            if(!e.target.classList.contains('table-workflows__item_info') && !e.target.closest('.window-workFlows')) {
+            if(!e.target.classList.contains('customers__item_info') && !e.target.closest('.window-workFlows')) {
                 hidePanel();
             }
         }
@@ -596,6 +597,26 @@ function HeaderActions() {
 
         headerCalendar.addEventListener('click', function () {
             calendar.classList.toggle('calendarVisible');
+        });
+    }
+}
+
+SwitchContentCustomers();
+
+function SwitchContentCustomers() {
+    let customers = document.querySelector('.customers');
+    let customersSwitchAll = customers.querySelectorAll('.customers__switch_item');
+    let customersWrap = customers.querySelectorAll('.customers__wrapper');
+    let prevItem = 2;
+    
+    for (let i = 0; i < customersSwitchAll.length; i++) {
+        let item = customersSwitchAll[i];
+
+        item.addEventListener('click',  function () {
+            customersWrap[prevItem].style.display = 'none';
+            customersSwitchAll[prevItem].classList.remove('isActiveSwitch');
+            customersWrap[prevItem = i].style.display = 'block';
+            customersSwitchAll[prevItem = i].classList.add('isActiveSwitch');
         });
     }
 }
