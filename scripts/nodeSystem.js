@@ -20,7 +20,7 @@ function InitQuestion() {
                     id: 'in',
                     position: {
                         name: 'left',
-                        args: { x: '-3', y: '8'}
+                        args: { x: '-3', y: '82'}
                     },
                     attrs: {
                         '.back': {
@@ -29,7 +29,7 @@ function InitQuestion() {
                             fill: '#ffd6d6',
                             width: '24',
                             height: '24',
-                            x: 30,
+                            x: 22,
                             rx: 4,
                             ry: 4
                         },
@@ -48,7 +48,7 @@ function InitQuestion() {
                             width: '30',
                             height: '30',
                             y: -3,
-                            x: 27,
+                            x: 19,
                             rx: 7,
                             ry: 7
                         },
@@ -59,7 +59,7 @@ function InitQuestion() {
                     markup: '<rect id="port-in"/>',
 
                     label: {
-                        markup: '<rect id="highlight" /><rect class="back"/><image width="14" height="10" style="transform: matrix(-1,0,0,1,50,7)" xlink:href="img/board/Union.svg"/>'
+                        markup: '<rect id="highlight" /><rect class="back"/><image width="14" height="10" style="transform: matrix(-1,0,0,1,42,7)" xlink:href="img/board/Union.svg"/>'
                     }
                 },
                 out: {
@@ -108,40 +108,31 @@ function InitQuestion() {
             },
             '#header-logo rect': {
                 fill: '#fff',
-                width: 105,
+                width: 57,
                 height: 50,
-                // y: '38',
-
                 rx: '6',
                 ry: '6',
             },
             '#header-logo text': {
-                fill: '#998A8A',
-                fontFamily: 'Nunito-Bold',
-                x: 42,
-                y: 27,
-                fontSize: 12,
-            },
-            '#header-logo #start': {
-                fill: '#998A8A',
+                fill: '#1CCF64',
                 fontFamily: 'Nunito-Black',
-                x: 42,
-                y: 27,
-                fontSize: 12,
+                x: 12,
+                y: 20,
+                fontSize: 13,
             },
-            '#header-logo #number': {
+            '#header #number': {
                 fill: '#998A8A',
                 fontFamily: 'Nunito-Bold',
-                x: 42,
-                y: 27,
+                x: 10,
+                y: 48,
                 fontSize: 12,
             },
             '#main-back': {
                 fill: '#fff',
                 refWidth: '100%',
                 refHeight: '100%',
-                y: 38,
-                refHeight2: '-38',
+                y: 30,
+                refHeight2: '-30',
                 filter: 'url(#dropshadow)',
                 rx: '7',
                 ry: '7'
@@ -151,7 +142,7 @@ function InitQuestion() {
                 refX: '50%',
                 refX2: '-8',
                 // x: 113,
-                y: 46,
+                y: 40,
                 width: 16,
                 height: 19,
                 cursor: 'pointer'
@@ -159,7 +150,7 @@ function InitQuestion() {
             '#header #remove': {
                 event: 'element:delete',
                 refDx: -17,
-                y: 46,
+                y: 38,
                 width: 10,
                 height: 9,
                 cursor: 'pointer'
@@ -198,7 +189,7 @@ function InitQuestion() {
             },
             '#footer #edit rect': {
                 event: 'element:edit',
-                fill: '#1CCF64',
+                fill: '#1d85d0',
                 refX: '50%',
                 refX2: '-42%',
                 refDy: '-80',
@@ -256,13 +247,14 @@ function InitQuestion() {
         }
     }, {
         markup: [
-            '<rect id="main-back"/>',
             '<g id="header-logo">',
-                '<rect/>',
-                // '<text id="start">Start</text>',
-                '<text id="number">Node №1</text>',
-            '</g>',
+            '<rect/>',
+            '<text id="start">Start</text>',
+        '</g>',
+            '<rect id="main-back"/>',
+
             '<g id="header">',
+                '<text id="number">Node №1</text>',
                 '<image id="play" xlink:href="img/board/Play.svg"/>',
                 '<image id="remove" xlink:href="img/board/cross.svg"/>',
                 '<text id="untitle"> Operator phrase: </text>',
@@ -321,11 +313,12 @@ function InitQuestion() {
 
             // }
             // console.log(this.getPorts()[0].attrs);
-            let portIn = this.getPorts()[0] || {};
+            let portIn = this.getPorts()[0];
 
-            console.log(portIn);
-            if(portIn.attrs == null || portIn.attrs['.back'].fill != newColor)
-                this.portProp( portIn.id , 'attrs/.back/fill', newColor);
+            // console.log(portIn);
+            if(portIn != null && portIn.group == 'in')
+                if(portIn.attrs == null || portIn.attrs['.back'].fill != newColor)
+                    this.portProp( portIn.id , 'attrs/.back/fill', newColor);
             // this.getPorts()[0].attrs.circle.fill = newColor;
 
 
@@ -560,11 +553,11 @@ app.Factory = {
             ports: {
                 items: isStart ? [] : [{ group: 'in'}]
             },
-            // attrs: {
-            //     '#header-logo': {
-            //         display: isStart ? 'block' : 'none'
-            //     }
-            // },
+            attrs: {
+                '#header-logo': {
+                    display: isStart ? 'block' : 'none'
+                }
+            },
             position: { x: 400, y: 250 },
             // size: { width: 100, height: 70 },
             question: { text: text, active: false},
@@ -1396,14 +1389,14 @@ joint.util.measureText = function(text) {
     textNode.data = text;
     var lineWidth = textSpan.getBBox().width;
 
-    if(lineWidth > 143) {
+    if(lineWidth > 220) {
         let characters = text.split('');
         let newText = '';
         for (let i = 0; i < characters.length; i++) {
             newText += characters[i];
             textNode.data = newText;
             lineWidth = textSpan.getBBox().width;
-            if(lineWidth >= 143) {
+            if(lineWidth >= 220) {
                 V(svgDocument).remove();
                 return newText + '...';
             }
@@ -1536,7 +1529,9 @@ function EditNodeWindow() {
 
         function InitEvent() {
 
-            input.addEventListener('autosize:resized', ChangeHeightItem);
+            input.addEventListener('autosize:resized', function() {
+                ChangeHeightItem();
+            });
             buttonCancel.onclick = function(e) {
                 console.log('buttonCancel');
                 CancelEdit();
@@ -1551,7 +1546,7 @@ function EditNodeWindow() {
                 ChangeHeightItem();
                 console.log('onfocus');
             };
-            
+
             input.onblur = function(e) {
                 Unhighlight();
                 ApplyText(input.value);
@@ -1559,7 +1554,7 @@ function EditNodeWindow() {
                 buttonCancel.style.right = '-145px';
                 input.style.paddingBottom = '10px';
                 autosize.update(input);
-                ChangeHeightItem();
+                ChangeHeightItem(52);
                 console.log('onblur');
             };
         }
@@ -1572,9 +1567,9 @@ function EditNodeWindow() {
             Edition();
         }
 
-        function ChangeHeightItem(indent) {
+        function ChangeHeightItem(newHeight) {
             // input.style.paddingBottom = indent;
-            containerItem.style.height = input.offsetHeight + 'px';
+            containerItem.style.height = (newHeight || input.offsetHeight) + 'px';
         }
 
         function ApplyText(text) {
@@ -1628,7 +1623,7 @@ function EditNodeWindow() {
             }
 
             function Cutter(text) {
-                if(getCountLines(text) > 3) {
+                if(getCountLines(text) > 1) {
                     let textFinally = '';
                     let lineText = '';
 
@@ -1639,7 +1634,7 @@ function EditNodeWindow() {
                     function LinesPreparation() {
                         while (true) {
                             let tempText = textFinally + words[0] + ' ';
-                            if(getCountLines(tempText) == 3) break;
+                            if(getCountLines(tempText) == 1) break;
                             words.shift();
                             textFinally = tempText;
                         }
@@ -1648,7 +1643,7 @@ function EditNodeWindow() {
                     function LastLine() {
                         while (true) {
                             lineText += words.shift() + ' ';
-                            if(getCountLines(textFinally + lineText) == 4) break;
+                            if(getCountLines(textFinally + lineText) == 2) break;
                         }
                     }
 

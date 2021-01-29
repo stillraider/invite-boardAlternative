@@ -119,6 +119,14 @@ svg {
 }
 
 @font-face {
+  font-family: "Nunito-Black";
+  font-display: swap;
+  src: url("../fonts/Nunito-Black.woff") format("woff"), url("../fonts/Nunito-Black.woff2") format("woff2");
+  font-weight: initial;
+  font-style: initial;
+}
+
+@font-face {
   font-family: "Nunito-SemiBold";
   font-display: swap;
   src: url("../fonts/Nunito-SemiBold.woff") format("woff"), url("../fonts/Nunito-SemiBold.woff2") format("woff2");
@@ -1266,7 +1274,7 @@ svg {
 .customers__wrapper:last-child,
 .dashboards__wrapper:last-child {
   display: block;
-  padding: 42px 44px;
+  padding: 42px 0;
 }
 
 .customers__button,
@@ -1545,8 +1553,6 @@ svg {
 }
 
 .dashboards__wrapper {
-  padding: 0 !important;
-  margin-top: 20px;
   background: url(../img/Scr.png) center/contain no-repeat;
 }
 
@@ -1638,7 +1644,7 @@ svg {
   display: -ms-flexbox;
   display: flex;
   position: absolute;
-  top: 43px;
+  top: 37px;
   left: 50%;
   z-index: 100;
   margin-left: -72.5px;
@@ -1731,8 +1737,8 @@ svg {
 .undo,
 .redo {
   position: relative;
-  width: 26px;
-  height: 26px;
+  width: 40px;
+  height: 40px;
   border: 1px solid #E7E7E7;
   margin-right: 4px;
   background: white;
@@ -1745,7 +1751,7 @@ svg {
   position: absolute;
   top: 50%;
   left: 50%;
-  font-size: 13px;
+  font-size: 16px;
   color: black;
   font-weight: 600;
   font-family: 'Font Awesome 5 Free','Font Awesome 5 Brands';
@@ -1753,17 +1759,17 @@ svg {
 
 .zoom-in::before {
   content: '\f00e';
-  margin: -6.5px 0 0 -7px;
+  margin: -8.5px 0 0 -7px;
 }
 
 .zoom-out::before {
   content: '\f010';
-  margin: -6.5px 0 0 -7px;
+  margin: -8.5px 0 0 -7px;
 }
 
 .undo::before {
   content: '\f0e2';
-  margin: -7px 0 0 -6.5px;
+  margin: -8.5px 0 0 -7px;
 }
 
 .redo {
@@ -1772,7 +1778,7 @@ svg {
 
 .redo::before {
   content: '\f01e';
-  margin: -7px 0 0 -6.5px;
+  margin: -8.5px 0 0 -7px;
 }
 
 .joint-paper-scroller {
@@ -1789,11 +1795,11 @@ svg {
       -ms-flex-direction: column;
           flex-direction: column;
   position: absolute;
-  top: 80px;
+  top: 107px;
   right: 0;
   width: 90%;
   max-width: 764px;
-  height: calc(100% - 80px);
+  height: calc(100% - 107px);
   padding: 18px 32px 24px 32px;
   -webkit-box-shadow: 0px 8px 49px rgba(0, 0, 0, 0.08);
           box-shadow: 0px 8px 49px rgba(0, 0, 0, 0.08);
@@ -2042,7 +2048,7 @@ svg {
 .node-edit__save {
   margin-top: 16px;
   color: white;
-  background: #1CCF64;
+  background: #1d85d0;
 }
 
 .node-edit__subtitle-text {
