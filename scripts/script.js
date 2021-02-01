@@ -398,7 +398,10 @@ function NavigationBoard() {
         let manage = document.querySelector('.manage');
         let workflows = document.querySelector('.workflows');
         let user = document.querySelector('.user');
-        let workflowsbutton = document.querySelector('.customers__button');
+        let header = document.querySelector('.header');
+        let navigation = document.querySelector('.navigation');
+        let inviteBoard = document.querySelector('.invite-board');
+        let customersbutton = document.querySelector('.customers__button');
         let board = document.querySelector('.board');
         let boardHome = board.querySelector('.board__home');
         let dashboard = document.querySelector('.dashboard');
@@ -412,12 +415,11 @@ function NavigationBoard() {
         });
 
         boardHome.addEventListener('click', function () {
-            board.style.display = 'none';
+            ActiveBoard('scroll', 'none', 'block');
         });
 
-        workflowsbutton.addEventListener('click', function () {
-            document.querySelector('body').style.overflow = 'hidden';
-            board.style.display = 'block';
+        customersbutton.addEventListener('click', function () {
+            ActiveBoard('hidden', 'block', 'none');
         });
 
         workflows.addEventListener('click', function () {
@@ -427,6 +429,14 @@ function NavigationBoard() {
         user.addEventListener('click', function () {
             ChangeContent('none', 'none', 'block', 'none', 'none');
         });
+
+        function ActiveBoard(bodyVal, showVal, hiddenVal) {
+            document.querySelector('body').style.overflowY = bodyVal;
+            board.style.display = showVal;
+            header.style.display = hiddenVal;
+            navigation.style.display = hiddenVal;
+            inviteBoard.style.display = hiddenVal;
+        }
 
         function ChangeContent(manageUse, workUse, inviteUse, boardUse, dashboardUse) {
             let management = document.querySelector('.management');
