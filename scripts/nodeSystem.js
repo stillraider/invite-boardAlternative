@@ -96,9 +96,9 @@ function InitQuestion() {
                     markup: '<rect class="back"/><rect id="connector"/>'
                 }
             },
-            // items: [{
-            //     group: 'in'
-            // }]
+            items: [{
+                group: 'in'
+            }]
         },
         attrs: {
             '.': {
@@ -252,12 +252,12 @@ function InitQuestion() {
                 stroke: '#1d85d0',
                 refWidth: '100%',
                 refHeight: '100%',
+                refWidth2: '20',
+                refHeight2: '20',
                 refX: '-10',
                 refY: '-10',
                 rx: '6',
                 ry: '6',
-                refWidth2: '20',
-                refHeight2: '20',
                 pointerEvents: 'none',
             }
         }
@@ -594,15 +594,18 @@ app.SelectionView = joint.mvc.View.extend({
 
 
 app.Factory = {
-
     createQuestion: function(text, isStart) {
         let question = new joint.shapes.qad.Question({
-            ports: {
-                items: isStart ? [] : [{ group: 'in'}]
-            },
+            // ports: {
+            //     items: isStart ? [] : [{ group: 'in'}]
+            // },
             attrs: {
                 '#header-logo': {
                     display: isStart ? 'block' : 'none'
+                },
+                '#outline': {
+                    refHeight2: isStart ? '20' : '-10',
+                    refY: isStart ? '-10' : '20'
                 }
             },
             position: { x: 400, y: 250 },
@@ -716,23 +719,24 @@ modePlay.Initialize();
 function ModePlay() {
     let that = this;
     let dialog = document.querySelector('.mode-start');
-    let answers = dialog.querySelector('.mode-start__answer');
-    let questionsText = dialog.querySelector('.mode-start__questions_text');
-    let close = dialog.querySelector('.mode-start__header_close');
+    let dialogBlock = document.querySelector('.mode-start__block');
+    let answers = document.querySelector('.mode-start__answer');
+    let questionsText = document.querySelector('.mode-start__questions_text');
+    let close = document.querySelector('.mode-start__header_close');
 
     this.Initialize = function() {
-        close.onclick = closeDialog;
+        close.onclick = dialog.onclick = closeDialog;
     }
 
     this.openDialog = function(graph, startID) {
         let dataJSON = app.Factory.createDialogJSON(graph, startID);
-        if(!ValidConnected()) return;
+        // if(!ValidConnected()) return;
         ActivityDialog(true);
         RenderDialog(dataJSON);
 
-        function ValidConnected() {
-            return dataJSON.nodes.length > 1 && dataJSON.links.length > 0;
-        }
+        // function ValidConnected() {
+        //     return dataJSON.nodes.length > 1 && dataJSON.links.length > 0;
+        // }
     }
 
     function closeDialog() {
@@ -740,7 +744,8 @@ function ModePlay() {
     }
 
     function ActivityDialog(isActive) {
-        dialog.style.display = isActive ? 'flex' : 'none';
+        dialog.style.display = isActive ? 'block' : 'none';
+        dialogBlock.style.display = isActive ? 'block' : 'none';
     }
 
     function RenderDialog(dataNodes, node) {
@@ -1000,16 +1005,18 @@ app.AppView = joint.mvc.View.extend({
 
         paper.on("link:snap:connect", function(linkView, evt) {
             evt.stopPropagation();
-            linkView.targetView.model.changeQuestionActivity(true);// attributes.ports.groups.in.attrs.circle.fill = '#FFF0BC';
-            linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , true);
-        })
+            // linkView.targetView.model.changeQuestionActivity(true);// attributes.ports.groups.in.attrs.circle.fill = '#FFF0BC';
+            // linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , true);
+            this.updatePort();
+        }, this)
         paper.on("link:snap:disconnect", function(linkView, evt, elementViewDisconnected, magnet, arrowhead) {
             evt.stopPropagation();
             if(linkView.targetView == null) {
-                elementViewDisconnected.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
-                linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
+                this.updatePort();
+                // elementViewDisconnected.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
+                // linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
             }
-        })
+        }, this)
 
 
         this.graph = paper.model;
@@ -1065,19 +1072,20 @@ app.AppView = joint.mvc.View.extend({
             }
             else {
                 let linkView = paper.findViewByModel(cell);
-                console.log(paper);
-                dataFilter.out.push(linkView.sourceMagnet.getAttribute('port'));
-                dataFilter.in.push(linkView.targetMagnet.getAttribute('port'));
+                if(linkView.targetMagnet != null) {
+                    dataFilter.in.push(linkView.targetMagnet.getAttribute('port'));
+                    dataFilter.out.push(linkView.sourceMagnet.getAttribute('port'));
+                }
             }
         });
         _.each(dataFilter.models, function(model) {
             let options = model.get('options');
             let question = model.get('question');
 
-            if(!model.get('start')) {
-                let mainPortID = model.getPorts()[0].id;
-                question.active = dataFilter.in.includes(mainPortID);
-            }
+            // if(!model.get('start')) {
+            let mainPortID = model.getPorts()[0].id;
+            question.active = dataFilter.in.includes(mainPortID);
+            // }
             _.each(options, function(opt) {
                 opt.active = dataFilter.out.includes(opt.id);
             });
@@ -1185,10 +1193,11 @@ function EditNodeWindow() {
     let lastSelect;
     let widthTextOriginal = 0;
     let nodeEdit = document.querySelector('.node-edit');
-    let containerItem = nodeEdit.querySelector('.node-edit__wrapper-item');
-    let сloseButton = nodeEdit.querySelector('.node-edit__header_btn');
-    let saveButton = nodeEdit.querySelector('.node-edit__save');
-    let playButton = nodeEdit.querySelector('.node-edit__play');
+    let nodeEditBlock = document.querySelector('.node-edit__block');
+    let containerItem = nodeEditBlock.querySelector('.node-edit__wrapper-item');
+    let сloseButton = nodeEditBlock.querySelector('.node-edit__header_btn');
+    let saveButton = nodeEditBlock.querySelector('.node-edit__save');
+    let playButton = nodeEditBlock.querySelector('.node-edit__play');
     // let body = document.querySelector('body');
     let questionItem;
 
@@ -1209,7 +1218,7 @@ function EditNodeWindow() {
         }
 
         function AddButton() {
-            let addButton = nodeEdit.querySelector('.node-edit__add-item');
+            let addButton = nodeEditBlock.querySelector('.node-edit__add-item');
             addButton.onclick = function() {
                 let answer = controlData.addAnswer();
                 AddItem(answer);
@@ -1222,7 +1231,7 @@ function EditNodeWindow() {
         }
 
         function CloseWindowButton() {
-            сloseButton.onclick = saveButton.onclick = function() {
+            сloseButton.onclick = saveButton.onclick = nodeEdit.onclick = function() {
                 controlData.ApplyEdit();
                 ShowWindow(false);
             }
@@ -1286,7 +1295,8 @@ function EditNodeWindow() {
 
     function ShowWindow(isShow) {
         modelGeneral.changeOutline(isShow);
-        nodeEdit.style.transform = 'translateX(' + (isShow ? 0 : 764) + 'px)';
+        nodeEditBlock.style.transform = 'translateX(' + (isShow ? 0 : 764) + 'px)';
+        nodeEdit.style.display = (isShow ? 'block' : 'none');
     }
 
     function InitEditItem(item, obj) {

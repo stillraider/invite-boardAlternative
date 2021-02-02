@@ -625,8 +625,56 @@ function SwitchContentCustomers() {
         item.addEventListener('click',  function () {
             customersWrap[prevItem].style.display = 'none';
             customersSwitchAll[prevItem].classList.remove('isActiveSwitch');
-            customersWrap[prevItem = i].style.display = 'block';
+            customersWrap[prevItem = i].style.display = 'flex';
             customersSwitchAll[prevItem = i].classList.add('isActiveSwitch');
+        });
+    }
+}
+
+ControlMenuCastomers();
+
+function ControlMenuCastomers() {
+    let customersItemHeight = document.querySelector('.customers__item').offsetHeight;
+    let customersMore = document.querySelectorAll('.customers__more');
+    let customersMenu = document.querySelector('.customers__menu');
+    let prevItem = 0;
+    
+    for (let i = 0; i < customersMore.length; i++) {
+        let item = customersMore[i];
+
+        item.addEventListener('click',  function () {
+            let visibleBlock = customersMenu.style.display == 'block';
+
+            customersMenu.style.top = 46 * i + 67 + 'px';
+            customersMenu.style.display = 'block';
+
+            if (visibleBlock && prevItem == i) {
+                customersMenu.style.display = 'none';
+            }
+            prevItem = i;
+        });
+    }
+}
+
+ActivePopUp();
+
+function ActivePopUp() {
+    let customersMenuItem = document.querySelectorAll('.customers__menu_item');
+    let popUp = document.querySelectorAll('.pop-up');
+    let popUpCancel = document.querySelectorAll('.pop-up__cancel');
+    
+    for (let i = 0; i < customersMenuItem.length; i++) {
+        let item = customersMenuItem[i];
+        let itemCancel = popUpCancel[i];
+
+        item.addEventListener('click', function () {
+            document.querySelector('body').style.overflowY = 'hidden';
+            popUp[i].style.display = 'block';
+        });
+
+        itemCancel.addEventListener('click', function () {
+            document.querySelector('body').style.overflowY = 'scroll';
+            popUp[i].style.display = 'none';
         });
     }
 }
