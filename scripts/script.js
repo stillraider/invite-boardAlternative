@@ -2,6 +2,7 @@ BoardManager();
 NavigationBoard();
 OpenModalWindow();
 HeaderActions();
+ControlCustomers();
 
 
 function BoardManager() {
@@ -19,18 +20,23 @@ function BoardManager() {
         this.InitDropdowns = function() {
             let selectHeader = document.querySelectorAll('.select__header');
             let selectItem = document.querySelectorAll('.select__item');
-
+            let selectHeaderItem;
+            let parentHeaderItem;
 
             for (let i = 0; i < selectHeader.length; i++) {
+                let item = selectHeader[i];
 
-                selectHeader[i].onclick = selectToggle;
+                item.onclick = selectToggle;
+                selectHeaderItem = item;
 
                 function selectToggle() {
                     let parentHeader = this.parentNode;
+                    parentHeaderItem = parentHeader;
 
                     parentHeader.querySelector('.select__icon').classList.toggle('rotateIcon');
                     parentHeader.classList.toggle('is-active');
 
+                    that.ChangeCurrent(item, parentHeaderItem);
                     that.DisableLastOpened(parentHeader);
                 }
             }
@@ -46,8 +52,9 @@ function BoardManager() {
 
                     select.classList.remove('is-active');
                     currentText.innerHTML = text;
-
                     lastOpenedRole.querySelector('.select__icon').classList.remove('rotateIcon');
+
+                    that.ChangeCurrent(selectHeaderItem, parentHeaderItem);
                 }
             }
         }
@@ -58,6 +65,13 @@ function BoardManager() {
                 lastOpenedRole.querySelector('.select__icon').classList.remove('rotateIcon');
             }
             lastOpenedRole = newSelectRole;
+        }
+
+        this.ChangeCurrent = function(newselect, newParrentHeader) {
+            if (newParrentHeader.closest('.pop-up__block')) {
+                newselect.classList.toggle('changeBorder');
+                newselect.querySelector('.select__current').classList.toggle('changeColor');
+            }
         }
     }
 
@@ -611,70 +625,111 @@ function HeaderActions() {
     }
 }
 
-SwitchContentCustomers();
+function ControlCustomers() {
+    let customersContent = document.querySelector('.customers__content');
+    let customersMenu = customersContent.querySelector('.customers__menu');
 
-function SwitchContentCustomers() {
-    let customers = document.querySelector('.customers');
-    let customersSwitchAll = customers.querySelectorAll('.customers__switch_item');
-    let customersWrap = customers.querySelectorAll('.customers__wrapper');
-    let prevItem = 2;
+    ControlMenuCastomers();
+    ActivePopUp();
+    SwitchContentCustomers();
     
-    for (let i = 0; i < customersSwitchAll.length; i++) {
-        let item = customersSwitchAll[i];
+    function ControlMenuCastomers() {
+        let customersMore = Array.prototype.slice.call(customersContent.querySelectorAll('.customers__more'));
+        let prevItem = 0;
+        
+        for (let i = 0; i < customersMore.length; i++) {
+            let item = customersMore[i];
+    
+            item.addEventListener('click',  function () {
+                let visibleBlock = customersMenu.style.display == 'block';
+                let indexItem = GetIndexItem();
+    
+                customersMenu.style.top = 46 * indexItem + 67 + 'px';
+                customersMenu.style.display = 'block';
+                
+                if (visibleBlock && prevItem == indexItem) {
+                    customersMenu.style.display = 'none';
+                }
+                prevItem = indexItem;
+                
+                let clickItem = item.closest('.customers__item');
 
-        item.addEventListener('click',  function () {
-            customersWrap[prevItem].style.display = 'none';
-            customersSwitchAll[prevItem].classList.remove('isActiveSwitch');
-            customersWrap[prevItem = i].style.display = 'flex';
-            customersSwitchAll[prevItem = i].classList.add('isActiveSwitch');
-        });
+                TakeWorkflowName = function(input) {
+                    input.value = clickItem.querySelector('.info-name').innerText;
+                }
+
+                ChangeWorkflowName = function(input) {
+                    clickItem.querySelector('.info-name').innerText = input.value;
+
+                }
+
+                DeleteWorkflowItem = function() {
+                    clickItem.remove();
+                    delete customersMore.splice(GetIndexItem(), 1);
+                }
+
+                function GetIndexItem() {
+                    return customersMore.indexOf(item);
+                }
+            });
+        }
     }
-}
-
-ControlMenuCastomers();
-
-function ControlMenuCastomers() {
-    let customersItemHeight = document.querySelector('.customers__item').offsetHeight;
-    let customersMore = document.querySelectorAll('.customers__more');
-    let customersMenu = document.querySelector('.customers__menu');
-    let prevItem = 0;
     
-    for (let i = 0; i < customersMore.length; i++) {
-        let item = customersMore[i];
+    function ActivePopUp() {
+        let customersMenuItem = customersContent.querySelectorAll('.customers__menu_item');
+        let headerСontainer = document.querySelector('.header__container');
+        let popUp = document.querySelectorAll('.pop-up');
+        let popUpCancel = document.querySelectorAll('.pop-up__cancel');
+        let popUpApply = document.querySelectorAll('.pop-up__apply');
+        
+        for (let i = 0; i < customersMenuItem.length; i++) {
+            let item = customersMenuItem[i];
+            let itemCancel = popUpCancel[i];
+            let itemApply = popUpApply[i];
+            
+            item.addEventListener('click', function () {
+                ControlPopUp('hidden', '37px', 'block');
+                if (i == 1) TakeWorkflowName(GetInputPopUp(1));
+            });
+    
+            itemCancel.addEventListener('click', function () {
+                ControlPopUp('scroll', '20px', 'none');
+            });
 
-        item.addEventListener('click',  function () {
-            let visibleBlock = customersMenu.style.display == 'block';
+            itemApply.addEventListener('click', function () {
+                ControlPopUp('scroll', '20px', 'none');
+                if (i == 1) ChangeWorkflowName(GetInputPopUp(1));
+                if (i == 3) DeleteWorkflowItem();
+            });
 
-            customersMenu.style.top = 46 * i + 67 + 'px';
-            customersMenu.style.display = 'block';
-
-            if (visibleBlock && prevItem == i) {
+            function ControlPopUp(overFlow, paddIngR, displayPopUp) {
+                document.querySelector('body').style.overflowY = overFlow;
+                headerСontainer.style.paddingRight = paddIngR;
+                popUp[i].style.display = displayPopUp;
                 customersMenu.style.display = 'none';
             }
-            prevItem = i;
-        });
+        }
+        
+        function GetInputPopUp(index) {
+            return popUp[index].querySelector('.pop-up__input');
+        }
     }
-}
 
-ActivePopUp();
-
-function ActivePopUp() {
-    let customersMenuItem = document.querySelectorAll('.customers__menu_item');
-    let popUp = document.querySelectorAll('.pop-up');
-    let popUpCancel = document.querySelectorAll('.pop-up__cancel');
+    function SwitchContentCustomers() {
+        let customers = document.querySelector('.customers');
+        let customersSwitchAll = customers.querySelectorAll('.customers__switch_item');
+        let customersWrap = customers.querySelectorAll('.customers__wrapper');
+        let prevItem = 2;
+        
+        for (let i = 0; i < customersSwitchAll.length; i++) {
+            let item = customersSwitchAll[i];
     
-    for (let i = 0; i < customersMenuItem.length; i++) {
-        let item = customersMenuItem[i];
-        let itemCancel = popUpCancel[i];
-
-        item.addEventListener('click', function () {
-            document.querySelector('body').style.overflowY = 'hidden';
-            popUp[i].style.display = 'block';
-        });
-
-        itemCancel.addEventListener('click', function () {
-            document.querySelector('body').style.overflowY = 'scroll';
-            popUp[i].style.display = 'none';
-        });
+            item.addEventListener('click',  function () {
+                customersWrap[prevItem].style.display = 'none';
+                customersSwitchAll[prevItem].classList.remove('isActiveSwitch');
+                customersWrap[prevItem = i].style.display = 'flex';
+                customersSwitchAll[prevItem = i].classList.add('isActiveSwitch');
+            });
+        }
     }
 }

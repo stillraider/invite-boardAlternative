@@ -9,7 +9,7 @@ function InitQuestion() {
     let headerHeight = 23;
     let bodyHeight = 71;
     let optionHeight = 50;
-    let questionHeight = 212;
+    let questionHeight = 170;
     let paddingBottom = 100;
     // let width = 235;
 
@@ -20,7 +20,7 @@ function InitQuestion() {
                     id: 'in',
                     position: {
                         name: 'left',
-                        args: { x: '-3', y: '82'}
+                        args: { x: '-3', y: '62'}
                     },
                     attrs: {
                         '.back': {
@@ -104,24 +104,142 @@ function InitQuestion() {
             '.': {
                 magnet: false
             },
-            '#header-logo': {
+            // '#header-logo': {
+            //     display: 'block',
+            // },
+            // '#header-logo rect': {
+            //     fill: '#fff',
+            //     width: 57,
+            //     height: 50,
+            //     rx: '6',
+            //     ry: '6',
+            // },
+            // '#header-start': {
+            //     display: 'block',
+            //     fill: '#1CCF64',
+            //     fontFamily: 'Nunito-Black',
+            //     x: 32,
+            //     y: 40,
+            //     fontSize: 13,
+            // },
+            '#header-strat': {
                 display: 'block',
             },
-            '#header-logo rect': {
-                fill: '#fff',
+            '#header-strat #startBorder': {
+                width: 38,
+                height: 20,
+                rx: '6',
+                ry: '6',
+                x: 32,
+                y: 7,
+
+                fill: 'transparent',
+                strokeWidth: 1,
+                stroke: '#1CCF64',
+            },
+            '#header-strat #start': {
+                fill: '#1CCF64',
+                fontFamily: 'Nunito-Black',
+                x: 36,
+                y: 21,
+                fontSize: 12,
+            },
+            '#header-end': {
+                display: 'none',
+            },
+            '#header-end #endBorder': {
+                width: 38,
+                height: 20,
+                rx: '6',
+                ry: '6',
+                x: 32,
+                y: 7,
+
+                fill: 'transparent',
+                strokeWidth: 1,
+                stroke: 'black',
+            },
+            '#header-end #end': {
+                fill: 'black',
+                fontFamily: 'Nunito-Black',
+                x: 21,
+                y: 54,
+                fontSize: 12,
+            },
+            // '#header-control': {
+            //     display: 'none',
+            // },
+            '#header-control #back': {
                 width: 57,
-                height: 50,
+                height: 71,
+                fill: 'transparent',
+                x: 400,
+                y: 0,
+            },
+            '#header-control #startNodeBtn': {
+                cursor: 'pointer',
+                width: 37,
+                height: 20,
+                rx: '6',
+                ry: '6',
+                x: 420,
+                y: 0,
+
+                fill: 'transparent',
+                strokeWidth: 1,
+                stroke: 'black',
+            },
+            '#header-control #endNodeBtn': {
+                cursor: 'pointer',
+                width: 37,
+                height: 20,
+                rx: '6',
+                ry: '6',
+                x: 420,
+                y: 25,
+
+                fill: 'transparent',
+                strokeWidth: 1,
+                stroke: 'black',
+            },
+            '#header-control #startNode': {
+                cursor: 'pointer',
+                fill: 'black',
+                fontFamily: 'Nunito-Black',
+                x: 424,
+                y: 14,
+                fontSize: 12,
+            },
+            '#header-control #endNode': {
+                cursor: 'pointer',
+                fill: 'black',
+                fontFamily: 'Nunito-Black',
+                x: 428,
+                y: 39,
+                fontSize: 12,
+            },
+            '#header-control #add': {
+                cursor: 'pointer',
+                width: 37,
+                height: 20,
+                x: 420,
+                y: 50,
+
+                fill: 'transparent',
+                strokeWidth: 1,
+                stroke: 'black',
                 rx: '6',
                 ry: '6',
             },
-            '#header-logo text': {
-                fill: '#1CCF64',
-                fontFamily: 'Nunito-Black',
-                x: 12,
-                y: 20,
-                fontSize: 13,
+            '#header-control #addImg': {
+                cursor: 'pointer',
+                width: 13,
+                height: 13,
+                x: 432,
+                y: 54,
             },
             '#header #number': {
+                display: 'none',
                 fill: '#998A8A',
                 fontFamily: 'Nunito-Bold',
                 x: 10,
@@ -129,11 +247,12 @@ function InitQuestion() {
                 fontSize: 12,
             },
             '#main-back': {
+                // event: 'element:border',
                 fill: '#fff',
                 refWidth: '100%',
                 refHeight: '100%',
-                y: 30,
-                refHeight2: '-30',
+                // y: 30,
+                // refHeight2: '-30',
                 filter: 'url(#dropshadow)',
                 rx: '7',
                 ry: '7'
@@ -143,7 +262,7 @@ function InitQuestion() {
                 refX: '50%',
                 refX2: '-8',
                 // x: 113,
-                y: 40,
+                y: 7,
                 width: 16,
                 height: 19,
                 cursor: 'pointer'
@@ -151,14 +270,14 @@ function InitQuestion() {
             '#header #remove': {
                 event: 'element:delete',
                 refDx: -17,
-                y: 38,
+                y: 7,
                 width: 10,
                 height: 9,
                 cursor: 'pointer'
             },
             '#header #untitle': {
                 x: 32,
-                y: 88,
+                y: 53,
                 fill: '#999999',
                 fontFamily: 'Nunito-Regular',
                 fontSize: 18,
@@ -167,21 +286,21 @@ function InitQuestion() {
             },
             '#header #question-title': {
                 x: 32,
-                y: 116,
+                y: 80,
                 fontFamily: 'Nunito-SemiBold',
                 fontSize: 18,
                 lineHeight: 24,
                 // letterSpacing: '-0.3'
             },
-            '#header rect': {
+            '#header #border-bottom': {
                 fill: '#F0E6E6',
-                y: 146,
+                y: 107,
                 refWidth: 1,
                 height: 2,
             },
             '#body #title': {
                 x: 32,
-                y: 190,
+                y: 150,
                 fill: '#999999',
                 // fontFamily: 'Nunito-Regular',
                 fontSize: 18,
@@ -259,23 +378,61 @@ function InitQuestion() {
                 rx: '6',
                 ry: '6',
                 pointerEvents: 'none',
+            },
+            '#outlineВotted': {
+                display: 'none',
+            },
+            '#outlineВotted #botted': {
+                fill: 'transparent',
+                strokeWidth: 3,
+                stroke: '#1d85d0',
+                strokeDasharray: '5',
+                refWidth: '100%',
+                refHeight: '100%',
+                refWidth2: '20',
+                refHeight2: '20',
+                refX: '-10',
+                refY: '-10',
+                rx: '6',
+                ry: '6',
+                pointerEvents: 'none',
             }
         }
     }, {
         markup: [
-            '<g id="header-logo">',
-                '<rect/>',
-                '<text id="start">Start</text>',
+            // '<g id="header-logo">',
+                // '<rect/>',
+                // '<text id="header-start">Start</text>',
+            // '</g>',
+            '<g id="outlineВotted">',
+                '<rect id="botted"/>',
+                '<g id="header-control">',
+                    '<rect id="back" />',
+                    '<rect id="startNodeBtn" />',
+                    '<rect id="endNodeBtn" />',
+                    '<text id="startNode">Start</text>',
+                    '<text id="endNode">End</text>',
+                    '<rect id="add" />',
+                    '<image id="addImg" xlink:href="img/board/add.svg"/>',
+                '</g>',
             '</g>',
-            '<rect id="main-back"/>',
 
+            '<rect id="main-back"/>',
             '<g id="header">',
+                '<g id="header-strat">',
+                    '<rect id="startBorder" />',
+                    '<text id="start">Start</text>',
+                '</g>',
+                '<g id="header-end">',
+                    '<rect id="endBorder" />',
+                    '<text id="end">End</text>',
+                '</g>',
                 '<text id="number">Node №1</text>',
                 '<image id="play" xlink:href="img/board/Play.svg"/>',
                 '<image id="remove" xlink:href="img/board/cross.svg"/>',
                 '<text id="untitle"> Operator phrase: </text>',
                 '<text id="question-title"/>',
-                '<rect/>',
+                '<rect id="border-bottom"/>',
             '</g>',
             '<g id="body">',
                 '<text id="title">Response:</text>',
@@ -287,7 +444,7 @@ function InitQuestion() {
                 '</g>',
             '</g>',
             '<g class="options"></g>',
-            '<rect id="outline" />'
+            '<rect id="outline" />',
         ].join(''),
 
         optionMarkup: [
@@ -305,6 +462,7 @@ function InitQuestion() {
             this.on('change:options', this.onChangeOptions, this);
             this.on('change:question', this.onChangeQuestion, this);
             this.on('change:outline', this.onChangeOutline, this);
+            this.on('change:outlineВotted', this.onChangeOutlineВotted, this);
             this.on('change:number', this.onChangeNumber, this);
 
             this.on('change:questionHeight', function() {
@@ -408,6 +566,11 @@ function InitQuestion() {
             this.attr('#outline/display', isOutline ? 'block' : 'none' );
         },
 
+        onChangeOutlineВotted: function() {
+            let isOutlineВotted = this.get('outlineВotted');
+            this.attr('#outlineВotted/display', isOutlineВotted ? 'block' : 'none' );
+        },
+
         onChangeNumber: function() {
             let number = this.get('number');
             this.attr('#number/text', 'Node №' + number);
@@ -479,6 +642,12 @@ function InitQuestion() {
             var outline = JSON.parse(JSON.stringify(this.get('outline')));
             outline = isOutline;
             this.set('outline', outline);
+        },
+
+        changeOutlineВotted : function(isOutlineВotted) {
+            var outlineВotted = JSON.parse(JSON.stringify(this.get('outlineВotted')));
+            outlineВotted = isOutlineВotted;
+            this.set('outlineВotted', outlineВotted);
         },
 
         changeNumber : function(number) {
@@ -600,19 +769,24 @@ app.Factory = {
             //     items: isStart ? [] : [{ group: 'in'}]
             // },
             attrs: {
-                '#header-logo': {
+                '#header-strat': {
                     display: isStart ? 'block' : 'none'
                 },
-                '#outline': {
-                    refHeight2: isStart ? '20' : '-10',
-                    refY: isStart ? '-10' : '20'
-                }
+                // '#outline': {
+                //     refHeight2: isStart ? '20' : '-10',
+                //     refY: isStart ? '-10' : '20'
+                // },
+                // '#outlineВotted #botted': {
+                //     refHeight2: isStart ? '20' : '-10',
+                //     refY: isStart ? '-10' : '20'
+                // }
             },
             position: { x: 400, y: 250 },
             // size: { width: 100, height: 70 },
             question: { text: text, active: false},
             start: isStart,
             outline: false,
+            outlineВotted: false,
             number: 1,
             // inPorts: [{ id: 'in', label: 'In' }],
             options: [
@@ -950,6 +1124,15 @@ app.AppView = joint.mvc.View.extend({
             evt.preventDefault();
             ZoomScroll(x, y, delta);
         })
+        let prevModelOutlineВotted;
+        paper.on('cell:pointerclick', function(ellView, evt, x, y) {
+            evt.preventDefault();
+            if(prevModelOutlineВotted != null)
+                prevModelOutlineВotted.changeOutlineВotted(false);
+            prevModelOutlineВotted = ellView.model;
+            ellView.model.changeOutlineВotted(true);
+            // console.log(ellView);
+        })
 
         $('.zoom-in').on('click', function() {
             Zoom(1);
@@ -1046,17 +1229,25 @@ app.AppView = joint.mvc.View.extend({
 
         paper.on('element:edit', function(elementView, evt, x, y) {
             evt.stopPropagation();
+            if(prevModelOutlineВotted != null)
+                prevModelOutlineВotted.changeOutlineВotted(false);
             editNodeWindow.SetListItems(elementView.model, this);
             // console.log(this);
             // this.updatePort();
         }, this);
 
+        // paper.on('element:border', function(elementView, evt, x, y) {
+        //     evt.stopPropagation();
+        //     editNodeWindow.SetListItems(elementView.model, this);
+        //     // modelGeneral.changeOutlineВotted(true);
+        //     // console.log(elementView.model);
+        //     // this.updatePort();
+        // }, this);
+
         paper.on('element:play', function(elementView, evt, x, y) {
             evt.stopPropagation();
             modePlay.openDialog(this.graph, elementView.model.id);
         }, this);
-
-
     },
 
     updatePort: function() {
@@ -1218,10 +1409,16 @@ function EditNodeWindow() {
         }
 
         function AddButton() {
-            let addButton = nodeEditBlock.querySelector('.node-edit__add-item');
-            addButton.onclick = function() {
-                let answer = controlData.addAnswer();
-                AddItem(answer);
+            InitButton('.node-edit__add-item');
+            InitButton('.node-edit__add-next', 'Next');
+
+            function InitButton(className, text) {
+                let addButton = nodeEditBlock.querySelector(className);
+                console.log(addButton);
+                addButton.onclick = function() {
+                    let answer = controlData.addAnswer(text);
+                    AddItem(answer);
+                }
             }
         }
 
@@ -1248,7 +1445,7 @@ function EditNodeWindow() {
     this.SetListItems = function(model, updatePort) {
         controlData.Initialize(model, updatePort);
         modelGeneral = model;
-        console.log(modelGeneral);
+        // console.log(modelGeneral);
         Reset();
         GenerateItems();
         ShowWindow(true);
@@ -1298,6 +1495,10 @@ function EditNodeWindow() {
         nodeEditBlock.style.transform = 'translateX(' + (isShow ? 0 : 764) + 'px)';
         nodeEdit.style.display = (isShow ? 'block' : 'none');
     }
+
+    // function ShowBorder(isShow) {
+    //     modelGeneral.changeOutlineВotted(isShow);
+    // }
 
     function InitEditItem(item, obj) {
         let containerItem = item.querySelector('.node-edit__item'),
@@ -1496,13 +1697,13 @@ function EditNodeWindow() {
             app.updatePort();
         }
 
-        this.addAnswer = function() {
+        this.addAnswer = function(text) {
             let newAnswer = {
                 id: _.uniqueId('option-'),
                 text: '',
                 active: false
             };
-            newAnswer.text = newAnswer.id;
+            newAnswer.text = text || newAnswer.id;
             this.data.answers.push(newAnswer);
             return newAnswer;
         }
