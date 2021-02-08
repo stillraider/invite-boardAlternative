@@ -162,8 +162,8 @@ function InitQuestion() {
             '#header-end #end': {
                 fill: 'black',
                 fontFamily: 'Nunito-Black',
-                x: 21,
-                y: 54,
+                x: 40,
+                y: 21,
                 fontSize: 12,
             },
             // '#header-control': {
@@ -176,8 +176,20 @@ function InitQuestion() {
                 x: 400,
                 y: 0,
             },
-            '#header-control #startNodeBtn': {
-                cursor: 'pointer',
+            '#header-control #startNode': {
+                event: 'element:setStart',
+                cursor: 'pointer'
+            },
+            '#header-control #startNode text': {
+                // cursor: 'pointer',
+                fill: 'black',
+                fontFamily: 'Nunito-Black',
+                x: 424,
+                y: 14,
+                fontSize: 12,
+            },
+            '#header-control #startNode rect': {
+                // cursor: 'pointer',
                 width: 37,
                 height: 20,
                 rx: '6',
@@ -189,8 +201,18 @@ function InitQuestion() {
                 strokeWidth: 1,
                 stroke: 'black',
             },
-            '#header-control #endNodeBtn': {
-                cursor: 'pointer',
+            '#header-control #endNode': {
+                event: 'element:setEnd',
+                cursor: 'pointer'
+            },
+            '#header-control #endNode text': {
+                fill: 'black',
+                fontFamily: 'Nunito-Black',
+                x: 428,
+                y: 39,
+                fontSize: 12,
+            },
+            '#header-control #endNode rect': {
                 width: 37,
                 height: 20,
                 rx: '6',
@@ -202,24 +224,11 @@ function InitQuestion() {
                 strokeWidth: 1,
                 stroke: 'black',
             },
-            '#header-control #startNode': {
-                cursor: 'pointer',
-                fill: 'black',
-                fontFamily: 'Nunito-Black',
-                x: 424,
-                y: 14,
-                fontSize: 12,
-            },
-            '#header-control #endNode': {
-                cursor: 'pointer',
-                fill: 'black',
-                fontFamily: 'Nunito-Black',
-                x: 428,
-                y: 39,
-                fontSize: 12,
-            },
             '#header-control #add': {
-                cursor: 'pointer',
+                event: 'element:add',
+                cursor: 'pointer'
+            },
+            '#header-control #add rect': {
                 width: 37,
                 height: 20,
                 x: 420,
@@ -231,8 +240,7 @@ function InitQuestion() {
                 rx: '6',
                 ry: '6',
             },
-            '#header-control #addImg': {
-                cursor: 'pointer',
+            '#header-control #add image': {
                 width: 13,
                 height: 13,
                 x: 432,
@@ -408,12 +416,18 @@ function InitQuestion() {
                 '<rect id="botted"/>',
                 '<g id="header-control">',
                     '<rect id="back" />',
-                    '<rect id="startNodeBtn" />',
-                    '<rect id="endNodeBtn" />',
-                    '<text id="startNode">Start</text>',
-                    '<text id="endNode">End</text>',
-                    '<rect id="add" />',
-                    '<image id="addImg" xlink:href="img/board/add.svg"/>',
+                    '<g id="startNode">',
+                        '<rect/>',
+                        '<text>Start</text>',
+                    '</g>',
+                    '<g id="endNode">',
+                        '<rect/>',
+                        '<text>End</text>',
+                    '</g>',
+                    '<g id="add">',
+                        '<rect/>',
+                        '<image xlink:href="img/board/add.svg"/>',
+                    '</g>',
                 '</g>',
             '</g>',
 
@@ -464,6 +478,7 @@ function InitQuestion() {
             this.on('change:outline', this.onChangeOutline, this);
             this.on('change:outlineВotted', this.onChangeOutlineВotted, this);
             this.on('change:number', this.onChangeNumber, this);
+            this.on('change:startEnd', this.onChangeStartEnd, this);
 
             this.on('change:questionHeight', function() {
                 this.attr('.options/refY', questionHeight, { silent: true });
@@ -576,6 +591,18 @@ function InitQuestion() {
             this.attr('#number/text', 'Node №' + number);
         },
 
+        onChangeStartEnd: function() {
+            let that = this;
+            let startEnd = this.get('startEnd');
+            if(startEnd == null) setDisplay('none', 'none');
+            else setDisplay(startEnd ? 'block' : 'none', startEnd ? 'none' : 'block');
+
+            function setDisplay(start, end) {
+                that.attr('#header-strat/display', start);
+                that.attr('#header-end/display', end);
+            }
+        },
+
         autoresize: function() {
             var options = this.get('options') || [];
             var height = options.length * optionHeight + ((options.length - 1) * 14) + questionHeight + paddingBottom;
@@ -654,6 +681,12 @@ function InitQuestion() {
             var dataNumber = JSON.parse(JSON.stringify(this.get('number')));
             dataNumber = number;
             this.set('number', dataNumber);
+        },
+
+        changeStartEnd : function(isStart) {
+            // var dataNumber = JSON.parse(JSON.stringify(this.get('number')));
+            // dataNumber = number;
+            this.set('startEnd', isStart);
         },
 
         applyOptionsAndQuestion : function(newOptions, newQuestion) {
@@ -763,7 +796,7 @@ app.SelectionView = joint.mvc.View.extend({
 
 
 app.Factory = {
-    createQuestion: function(text, isStart) {
+    createQuestion: function(text, isStart, x, y) {
         let question = new joint.shapes.qad.Question({
             // ports: {
             //     items: isStart ? [] : [{ group: 'in'}]
@@ -781,10 +814,10 @@ app.Factory = {
                 //     refY: isStart ? '-10' : '20'
                 // }
             },
-            position: { x: 400, y: 250 },
+            position: { x: x || 400, y: y || 250 },
             // size: { width: 100, height: 70 },
             question: { text: text, active: false},
-            start: isStart,
+            startEnd: isStart,
             outline: false,
             outlineВotted: false,
             number: 1,
@@ -867,7 +900,7 @@ app.Factory = {
                     o.options = cell.get('options');
                     dialog.nodes.push(o);
                     if(!startID) {
-                        if(cell.get('start'))
+                        if(cell.get('startEnd'))
                             dialog.startNode = dialog.nodes.length - 1;
                     }
                     else if(startID == cell.id)
@@ -989,7 +1022,9 @@ app.AppView = joint.mvc.View.extend({
     el: '.board',
 
     events: {
-        'click .board__create-node': 'addQuestion',
+        'click .board__create-node': function() {
+            this.addQuestion();
+        },
         'click .board__start': 'previewDialog',
         'click #toolbar .code-snippet': 'showCodeSnippet',
         'click #toolbar .load-example': 'loadExample',
@@ -1002,7 +1037,9 @@ app.AppView = joint.mvc.View.extend({
     },
 
     initializePaper: function() {
+        let prevModelOutlineВotted;
         let that = this;
+
         joint.linkTools.mapping = {
             Remove: joint.linkTools.Button.extend({
                 children: [{
@@ -1028,8 +1065,6 @@ app.AppView = joint.mvc.View.extend({
                 }]
             })
         }
-
-
         joint.shapes.standard.Link.define('mapping.Link', {
             z: -1,
             attrs: {
@@ -1124,7 +1159,7 @@ app.AppView = joint.mvc.View.extend({
             evt.preventDefault();
             ZoomScroll(x, y, delta);
         })
-        let prevModelOutlineВotted;
+
         paper.on('cell:pointerclick', function(ellView, evt, x, y) {
             evt.preventDefault();
             if(prevModelOutlineВotted != null)
@@ -1145,7 +1180,6 @@ app.AppView = joint.mvc.View.extend({
         function ZoomScroll(x, y, delta) {
             paperScroller.zoom(0.15 * delta, { min: 0.4, max: 2.5, grid: 0.1, ox: x, oy: y });
         }
-
         function Zoom(delta) {
             paperScroller.zoom(0.4 * delta, { min: 0.4, max: 2.5});
         }
@@ -1188,19 +1222,13 @@ app.AppView = joint.mvc.View.extend({
 
         paper.on("link:snap:connect", function(linkView, evt) {
             evt.stopPropagation();
-            // linkView.targetView.model.changeQuestionActivity(true);// attributes.ports.groups.in.attrs.circle.fill = '#FFF0BC';
-            // linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , true);
             this.updatePort();
         }, this)
         paper.on("link:snap:disconnect", function(linkView, evt, elementViewDisconnected, magnet, arrowhead) {
             evt.stopPropagation();
-            if(linkView.targetView == null) {
+            if(linkView.targetView == null)
                 this.updatePort();
-                // elementViewDisconnected.model.changeQuestionActivity(false);//attributes.ports.groups.in.attrs.circle.fill = '#ffd6d6';
-                // linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
-            }
         }, this)
-
 
         this.graph = paper.model;
         commandManager = new joint.dia.CommandManager({
@@ -1213,9 +1241,6 @@ app.AppView = joint.mvc.View.extend({
         paper.on('element:delete', function(elementView, evt, x, y) {
             evt.stopPropagation();
             let countQuestion = 0;
-            // console.log(elementView);
-            //o.target = cell.get('target');
-            // linkView.sourceView.model.changeOptionActivity(linkView.sourceMagnet.getAttribute('port') , false);
 
             elementView.model.remove();
             _.each(this.graph.getCells(), function(cell) {
@@ -1232,21 +1257,33 @@ app.AppView = joint.mvc.View.extend({
             if(prevModelOutlineВotted != null)
                 prevModelOutlineВotted.changeOutlineВotted(false);
             editNodeWindow.SetListItems(elementView.model, this);
-            // console.log(this);
-            // this.updatePort();
         }, this);
-
-        // paper.on('element:border', function(elementView, evt, x, y) {
-        //     evt.stopPropagation();
-        //     editNodeWindow.SetListItems(elementView.model, this);
-        //     // modelGeneral.changeOutlineВotted(true);
-        //     // console.log(elementView.model);
-        //     // this.updatePort();
-        // }, this);
 
         paper.on('element:play', function(elementView, evt, x, y) {
             evt.stopPropagation();
             modePlay.openDialog(this.graph, elementView.model.id);
+        }, this);
+
+        paper.on('element:setStart', function(elementView, evt, x, y) {
+            evt.stopPropagation();
+            let oldStart = this.findModelStart();
+
+            if(!oldStart || oldStart.id != elementView.model.id)
+                elementView.model.changeStartEnd(true);
+            if(oldStart) oldStart.changeStartEnd(null);
+        }, this);
+        paper.on('element:setEnd', function(elementView, evt, x, y) {
+            evt.stopPropagation();
+
+            if(elementView.model.get('startEnd') != false)
+                elementView.model.changeStartEnd(false);
+            else
+                elementView.model.changeStartEnd(null);
+        }, this);
+        paper.on('element:add', function(elementView, evt, x, y) {
+            evt.stopPropagation();
+            let pos = elementView.model.get('position');
+            this.addQuestion(pos.x + 530, pos.y);
         }, this);
     },
 
@@ -1286,17 +1323,12 @@ app.AppView = joint.mvc.View.extend({
         });
     },
 
-    addQuestion: function() {
+    addQuestion: function(x, y) {
         let countQuestion = 0;
-        let isStart = true;
+        let isStart = this.findModelStart() == null;
 
-        _.each(this.graph.getCells(), function(model) {
-            if(model.get('start')) {
-                isStart = false;
-                return false;
-            }
-        }.bind(this));
-        app.Factory.createQuestion('Question', isStart).addTo(this.graph);
+
+        app.Factory.createQuestion('Question', isStart, x, y).addTo(this.graph);
 
         _.each(this.graph.getCells(), function(cell) {
             if(cell.get('type') == 'qad.Question'){
@@ -1304,6 +1336,17 @@ app.AppView = joint.mvc.View.extend({
                 cell.changeNumber(countQuestion);
             }
         });
+    },
+
+    findModelStart: function() {
+        let model = null;
+        _.each(this.graph.getCells(), function(cell) {
+            if(cell.get('startEnd')) {
+                model = cell;
+                return false;
+            }
+        }.bind(this));
+        return model;
     },
 
     previewDialog: function() {
