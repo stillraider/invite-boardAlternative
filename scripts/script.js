@@ -505,7 +505,7 @@ function OpenModalWindow() {
     ModalWindowManage();
 
     function ModalWindowManage() {
-        let tableItem = document.querySelectorAll('.table__content');
+        let tableItem = document.querySelectorAll('.content');
         let wndowManage = document.querySelector('.window-manage');
 
         for (let i = 0; i < tableItem.length; i++) {
@@ -523,7 +523,7 @@ function OpenModalWindow() {
         }
 
         function eventHideLocation(e) {
-            if(!e.target.classList.contains('table__content') && !e.target.closest('.window-manage')) {
+            if(!e.target.classList.contains('content') && !e.target.closest('.window-manage')) {
                 hidePanel();
             }
         }

@@ -817,7 +817,7 @@ app.Factory = {
             position: { x: x || 400, y: y || 250 },
             // size: { width: 100, height: 70 },
             question: { text: text, active: false},
-            startEnd: isStart,
+            startEnd: isStart ? true : null,
             outline: false,
             outlineВotted: false,
             number: 1,
@@ -972,7 +972,7 @@ function ModePlay() {
     };
 
     function RenderOption(option) {
-        var elOption = CreateElement('div', 'mode-start__answer_item');
+        var elOption = CreateElement('span', 'mode-start__answer_item');
         elOption.textContent = option.text;
         let optionID = option.id;
 
@@ -1262,6 +1262,7 @@ app.AppView = joint.mvc.View.extend({
         paper.on('element:play', function(elementView, evt, x, y) {
             evt.stopPropagation();
             modePlay.openDialog(this.graph, elementView.model.id);
+            editNodeWindow.AdaptiveAnswerOperator();
         }, this);
 
         paper.on('element:setStart', function(elementView, evt, x, y) {
@@ -1423,7 +1424,7 @@ editNodeWindow.Initialize();
 function EditNodeWindow() {
     let modelGeneral;
     let cloneItemMain;
-    let countItems;
+    // let countItems;
     let lastSelect;
     let widthTextOriginal = 0;
     let nodeEdit = document.querySelector('.node-edit');
@@ -1434,6 +1435,7 @@ function EditNodeWindow() {
     let playButton = nodeEditBlock.querySelector('.node-edit__play');
     // let body = document.querySelector('body');
     let questionItem;
+    let that = this;
 
     let controlData = new ControlData();
     // let textEditor = new TextEditor();
@@ -1476,11 +1478,12 @@ function EditNodeWindow() {
                 ShowWindow(false);
             }
         }
-
+        
         function PlayButton() {
             playButton.onclick = function() {
-                console.log('play');
+                // console.log('play');
                 modePlay.openDialog(modelGeneral.graph, modelGeneral.id);
+                that.AdaptiveAnswerOperator();
             }
         }
     }
@@ -1537,6 +1540,19 @@ function EditNodeWindow() {
         modelGeneral.changeOutline(isShow);
         nodeEditBlock.style.transform = 'translateX(' + (isShow ? 0 : 764) + 'px)';
         nodeEdit.style.display = (isShow ? 'block' : 'none');
+    }
+
+    this.AdaptiveAnswerOperator = function() {
+        let modeStartAnswer = document.querySelectorAll('.mode-start__answer_item');
+    
+        for (let i = 0; i < modeStartAnswer.length; i++) {
+            let item = modeStartAnswer[i];
+            
+            if (item.textContent.length > 40) {
+                item.style.width = '100%';
+            }
+        }
+        // console.log(modeStartAnswer[0].textContent.length);
     }
 
     // function ShowBorder(isShow) {
@@ -1628,11 +1644,11 @@ function EditNodeWindow() {
 
         function cutText(text) {
             let lineHeight;
-            let words = text.split(' ');
+
             let textElement;
 
             CreateTextElement();
-            let readyText = Cutter(text);
+            let readyText = Cutter();
             textElement.remove();
             return readyText;
 
@@ -1650,7 +1666,12 @@ function EditNodeWindow() {
                 document.body.appendChild(textElement);
             }
 
-            function Cutter(text) {
+            function Cutter() {
+                let linesUser = text.split('\n')[0];
+                if(getCountLines(linesUser) > 1)
+                    text = linesUser;
+                else return linesUser + '...';
+                let words = text.split(' ');
                 if(getCountLines(text) > 1) {
                     let textFinally = '';
                     let lineText = '';
@@ -1758,6 +1779,7 @@ function EditNodeWindow() {
         }
     }
 }
+
 
 
 window.appView = new app.AppView;
