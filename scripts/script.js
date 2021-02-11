@@ -307,7 +307,7 @@ function NavigationBoard() {
         let navIcon = navList.querySelector('.navigation__icon-items');
         // let naviItems = navList.querySelectorAll('.navigation__list_items');
         let inviteBoard = document.querySelector('.invite-board');
-        
+
         inviteBoard.style.marginLeft = navIcon.offsetWidth + 'px';
 
         headerBurger.addEventListener('click', ToggleMenu);
@@ -321,7 +321,7 @@ function NavigationBoard() {
                 navList.parentNode.style.width = navListWidth + 'px';
                 inviteBoard.style.marginLeft = navListWidth + 'px';
             }
-            
+
             else {
                 navList.parentNode.style.width = navIconWidth + 'px';
                 inviteBoard.style.marginLeft = navIconWidth + 'px';
@@ -632,26 +632,26 @@ function ControlCustomers() {
     ControlMenuCastomers();
     ActivePopUp();
     SwitchContentCustomers();
-    
+
     function ControlMenuCastomers() {
         let customersMore = Array.prototype.slice.call(customersContent.querySelectorAll('.customers__more'));
         let prevItem = 0;
-        
+
         for (let i = 0; i < customersMore.length; i++) {
             let item = customersMore[i];
-    
+
             item.addEventListener('click',  function () {
                 let visibleBlock = customersMenu.style.display == 'block';
                 let indexItem = GetIndexItem();
-    
+
                 customersMenu.style.top = 46 * indexItem + 67 + 'px';
                 customersMenu.style.display = 'block';
-                
+
                 if (visibleBlock && prevItem == indexItem) {
                     customersMenu.style.display = 'none';
                 }
                 prevItem = indexItem;
-                
+
                 let clickItem = item.closest('.customers__item');
 
                 TakeWorkflowName = function(input) {
@@ -674,24 +674,24 @@ function ControlCustomers() {
             });
         }
     }
-    
+
     function ActivePopUp() {
         let customersMenuItem = customersContent.querySelectorAll('.customers__menu_item');
         let headerСontainer = document.querySelector('.header__container');
         let popUp = document.querySelectorAll('.pop-up');
         let popUpCancel = document.querySelectorAll('.pop-up__cancel');
         let popUpApply = document.querySelectorAll('.pop-up__apply');
-        
+
         for (let i = 0; i < customersMenuItem.length; i++) {
             let item = customersMenuItem[i];
             let itemCancel = popUpCancel[i];
             let itemApply = popUpApply[i];
-            
+
             item.addEventListener('click', function () {
                 ControlPopUp('hidden', '37px', 'block');
                 if (i == 1) TakeWorkflowName(GetInputPopUp(1));
             });
-    
+
             itemCancel.addEventListener('click', function () {
                 ControlPopUp('scroll', '20px', 'none');
             });
@@ -709,7 +709,7 @@ function ControlCustomers() {
                 customersMenu.style.display = 'none';
             }
         }
-        
+
         function GetInputPopUp(index) {
             return popUp[index].querySelector('.pop-up__input');
         }
@@ -720,10 +720,10 @@ function ControlCustomers() {
         let customersSwitchAll = customers.querySelectorAll('.customers__switch_item');
         let customersWrap = customers.querySelectorAll('.customers__wrapper');
         let prevItem = 2;
-        
+
         for (let i = 0; i < customersSwitchAll.length; i++) {
             let item = customersSwitchAll[i];
-    
+
             item.addEventListener('click',  function () {
                 customersWrap[prevItem].style.display = 'none';
                 customersSwitchAll[prevItem].classList.remove('isActiveSwitch');

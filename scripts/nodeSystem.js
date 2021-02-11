@@ -170,8 +170,8 @@ function InitQuestion() {
             //     display: 'none',
             // },
             '#header-control #back': {
-                width: 57,
-                height: 71,
+                width: 81,
+                height: 117,
                 fill: 'transparent',
                 x: 400,
                 y: 0,
@@ -184,14 +184,14 @@ function InitQuestion() {
                 // cursor: 'pointer',
                 fill: 'black',
                 fontFamily: 'Nunito-Black',
-                x: 424,
-                y: 14,
-                fontSize: 12,
+                x: 426,
+                y: 24,
+                fontSize: 19,
             },
             '#header-control #startNode rect': {
                 // cursor: 'pointer',
-                width: 37,
-                height: 20,
+                width: 61,
+                height: 35,
                 rx: '6',
                 ry: '6',
                 x: 420,
@@ -208,17 +208,17 @@ function InitQuestion() {
             '#header-control #endNode text': {
                 fill: 'black',
                 fontFamily: 'Nunito-Black',
-                x: 428,
-                y: 39,
-                fontSize: 12,
+                x: 432,
+                y: 64,
+                fontSize: 19,
             },
             '#header-control #endNode rect': {
-                width: 37,
-                height: 20,
+                width: 61,
+                height: 35,
                 rx: '6',
                 ry: '6',
                 x: 420,
-                y: 25,
+                y: 40,
 
                 fill: 'transparent',
                 strokeWidth: 1,
@@ -229,10 +229,10 @@ function InitQuestion() {
                 cursor: 'pointer'
             },
             '#header-control #add rect': {
-                width: 37,
-                height: 20,
+                width: 61,
+                height: 35,
                 x: 420,
-                y: 50,
+                y: 81,
 
                 fill: 'transparent',
                 strokeWidth: 1,
@@ -240,11 +240,12 @@ function InitQuestion() {
                 rx: '6',
                 ry: '6',
             },
-            '#header-control #add image': {
-                width: 13,
-                height: 13,
-                x: 432,
-                y: 54,
+            '#header-control #add text': {
+                fill: 'black',
+                fontFamily: 'Nunito-Black',
+                x: 427,
+                y: 104,
+                fontSize: 19,
             },
             '#header #number': {
                 display: 'none',
@@ -426,7 +427,7 @@ function InitQuestion() {
                     '</g>',
                     '<g id="add">',
                         '<rect/>',
-                        '<image xlink:href="img/board/add.svg"/>',
+                        '<text>Node</text>',
                     '</g>',
                 '</g>',
             '</g>',
@@ -488,7 +489,7 @@ function InitQuestion() {
             // this.on('change:optionHeight', this.autoresize, this);
 
             this.attr('.options/refY', questionHeight, { silent: true });
-            this.attr('#question-title/text', this.get('question').text, { silent: true });
+            this.attr('#question-title/text', joint.util.measureText(this.get('question').text), { silent: true });
 
             this.onChangeOptions();
         },
@@ -512,7 +513,6 @@ function InitQuestion() {
                 if(portIn.attrs == null || portIn.attrs['.back'].fill != newColor)
                     this.portProp( portIn.id , 'attrs/.back/fill', newColor);
             // this.getPorts()[0].attrs.circle.fill = newColor;
-
 
             let questionText = joint.util.measureText(question.text);
             if(questionText != this.attr('#question-title/text'))
@@ -964,7 +964,7 @@ function ModePlay() {
     };
 
     function RenderQuestion(node) {
-        answers.textContent = '';
+        answers.innerHTML = '';
         for (var i = 0; i < node.options.length; i++) {
             answers.appendChild(RenderOption(node.options[i]));
         }
@@ -972,8 +972,8 @@ function ModePlay() {
     };
 
     function RenderOption(option) {
-        var elOption = CreateElement('span', 'mode-start__answer_item');
-        elOption.textContent = option.text;
+        var elOption = CreateElement('div', 'mode-start__answer_item');
+        elOption.innerHTML = option.text;
         let optionID = option.id;
 
         elOption.onclick = function() {
@@ -1329,7 +1329,7 @@ app.AppView = joint.mvc.View.extend({
         let isStart = this.findModelStart() == null;
 
 
-        app.Factory.createQuestion('Question', isStart, x, y).addTo(this.graph);
+        app.Factory.createQuestion('<p>Question</p>', isStart, x, y).addTo(this.graph);
 
         _.each(this.graph.getCells(), function(cell) {
             if(cell.get('type') == 'qad.Question'){
@@ -1387,6 +1387,8 @@ app.AppView = joint.mvc.View.extend({
 });
 
 joint.util.measureText = function(text) {
+    let mathes = [...text.matchAll(/<p>(.*?)<\/p>/g)];
+    text = mathes[0][1].replace(/<.*?>/g, "");
     var svgDocument = V('svg').node;
     var textElement = V('<text><tspan></tspan></text>').node;
     var textSpan = textElement.firstChild;
@@ -1400,22 +1402,26 @@ joint.util.measureText = function(text) {
     textNode.data = text;
     var lineWidth = textSpan.getBBox().width;
 
+    let newText = text;
+
     if(lineWidth > 220) {
         let characters = text.split('');
-        let newText = '';
+        newText = '';
         for (let i = 0; i < characters.length; i++) {
             newText += characters[i];
             textNode.data = newText;
             lineWidth = textSpan.getBBox().width;
             if(lineWidth >= 220) {
-                V(svgDocument).remove();
-                return newText + '...';
+                newText += '...';
+                break;
             }
         }
     }
+    else if(mathes.length > 1)
+        newText += '...';
 
     V(svgDocument).remove();
-    return text;
+    return newText;
 };
 
 let editNodeWindow = new EditNodeWindow();
@@ -1478,7 +1484,7 @@ function EditNodeWindow() {
                 ShowWindow(false);
             }
         }
-        
+
         function PlayButton() {
             playButton.onclick = function() {
                 // console.log('play');
@@ -1544,10 +1550,10 @@ function EditNodeWindow() {
 
     this.AdaptiveAnswerOperator = function() {
         let modeStartAnswer = document.querySelectorAll('.mode-start__answer_item');
-    
+
         for (let i = 0; i < modeStartAnswer.length; i++) {
             let item = modeStartAnswer[i];
-            
+
             if (item.textContent.length > 40) {
                 item.style.width = '100%';
             }
@@ -1560,10 +1566,17 @@ function EditNodeWindow() {
     // }
 
     function InitEditItem(item, obj) {
+
         let containerItem = item.querySelector('.node-edit__item'),
-        input = containerItem.querySelector('.node-edit__item_text'),
+        editor = containerItem.querySelector('#editor'),
+        quill = Quill.find(editor) || new Quill(editor, { //TODO: Узнать удаляеться ли объект с кучи после удаления елемента
+            theme: 'snow'
+        });
+        let input = containerItem.querySelector('.ql-editor'),
+        // textInput = input.querySelector('p'),
         buttonSave = containerItem.querySelector('.node-edit__control_start'),
         buttonCancel = containerItem.querySelector('.node-edit__control_cancel'),
+        qlToolbar = containerItem.querySelector('.ql-toolbar'),
         lastText = '';
 
         autosize(input);
@@ -1572,35 +1585,60 @@ function EditNodeWindow() {
         ApplyText(obj.text);
 
         function InitEvent() {
-
-            input.addEventListener('autosize:resized', function() {
-                ChangeHeightItem();
-            });
             buttonCancel.onclick = function(e) {
                 console.log('buttonCancel');
+                DisableEdit();
                 CancelEdit();
             }
 
-            input.onfocus = function(e) {
+            buttonSave.onclick = function(e) {
+                console.log('buttonSave');
+                DisableEdit();
+            }
+
+            input.onfocus = InputClick;
+
+            function InputClick(e) {
+                input.onfocus = null;
+                document.addEventListener('mousedown', documentClick);
+
+                qlToolbar.style.top = 0;
+
                 ItemClick(e);
                 buttonSave.style.right = '75px';
                 buttonCancel.style.right = '5px';
-                input.style.paddingBottom = '35px';
-                autosize.update(input);
-                ChangeHeightItem();
+                ShowParameters();
                 console.log('onfocus');
-            };
+                input.innerHTML = obj.text;
+                quill.on('text-change', ShowParameters);
+            }
 
-            input.onblur = function(e) {
+            function ShowParameters() {
+                ChangeHeightItem(null, 35, 50);
+            }
+
+            function documentClick(event) {
+                console.log("documentClick");
+                let isClickInside = containerItem.contains(event.target);
+
+                if (!isClickInside) {
+                    DisableEdit();
+                }
+            }
+
+            function DisableEdit() {
+                quill.off('text-change', ShowParameters);
+                input.onfocus = InputClick;
+                document.removeEventListener('mousedown', documentClick);
+
+                qlToolbar.style.top = '-48px';
                 Unhighlight();
-                ApplyText(input.value);
+                ApplyText(input.innerHTML);
                 buttonSave.style.right = '-75px';
                 buttonCancel.style.right = '-145px';
-                input.style.paddingBottom = '10px';
-                autosize.update(input);
-                ChangeHeightItem(52);
-                console.log('onblur');
-            };
+                // autosize.update(input);
+                ChangeHeightItem(52, 10, 24);
+            }
         }
 
         function ItemClick() {
@@ -1611,19 +1649,28 @@ function EditNodeWindow() {
             Edition();
         }
 
-        function ChangeHeightItem(newHeight) {
-            // input.style.paddingBottom = indent;
-            containerItem.style.height = (newHeight || input.offsetHeight) + 'px';
+        function ChangeHeightItem(newHeight, paddingBottom, paddingTop) {
+            input.style.paddingBottom = paddingBottom + 'px';
+            input.style.paddingTop = paddingTop + 'px';
+
+            if(!newHeight) {
+                newHeight = paddingBottom + paddingTop;
+                _.each(input.children, function(child) {
+                    newHeight += child.offsetHeight;
+                }.bind(this));
+            }
+
+            containerItem.style.height = newHeight + 'px';
         }
 
         function ApplyText(text) {
-            input.value = cutText(text);
+            input.innerHTML = cutText(text);
             lastText = obj.text;
             obj.text = text;
         }
 
         function CancelEdit() {
-            input.value = cutText(lastText);
+            input.innerHTML = cutText(lastText);
             obj.text = lastText;
         }
 
@@ -1643,6 +1690,10 @@ function EditNodeWindow() {
         }
 
         function cutText(text) {
+            console.log(text);
+            let mathes = [...text.matchAll(/<p>(.*?)<\/p>/g)];
+            console.log(mathes);
+            text = mathes[0][1].replace(/<.*?>/g, "");
             let lineHeight;
 
             let textElement;
@@ -1667,10 +1718,10 @@ function EditNodeWindow() {
             }
 
             function Cutter() {
-                let linesUser = text.split('\n')[0];
-                if(getCountLines(linesUser) > 1)
-                    text = linesUser;
-                else return linesUser + '...';
+                // let linesUser = text.split('\n')[0];
+                // if(getCountLines(linesUser) > 1)
+                //     text = linesUser;
+                // else return linesUser;
                 let words = text.split(' ');
                 if(getCountLines(text) > 1) {
                     let textFinally = '';
@@ -1721,7 +1772,7 @@ function EditNodeWindow() {
 
                     return textFinally + lineText + '...';
                 }
-                return text;
+                return text + (mathes.length > 1 ? '...' : '');
             }
 
             function getCountLines(text) {
@@ -1767,7 +1818,8 @@ function EditNodeWindow() {
                 text: '',
                 active: false
             };
-            newAnswer.text = text || newAnswer.id;
+            newAnswer.text = '<p>' + (text || newAnswer.id) + '</p>';
+
             this.data.answers.push(newAnswer);
             return newAnswer;
         }
