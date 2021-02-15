@@ -362,7 +362,7 @@ function InitQuestion() {
                 yAlignment: 'middle',
                 fontFamily: 'Nunito-Bold',
             },
-            '.option rect': {
+            '.option .back': {
                 refX: '50%',
                 refX2: '-42%',
                 refWidth: '84%',
@@ -372,6 +372,23 @@ function InitQuestion() {
                 fill: '#fff',
                 strokeWidth: 1,
                 stroke: '#F0E6E6'
+            },
+            '.option .add': {
+                transform: 'translate(303, 14)'
+            },
+            '.option .add rect': {
+                event: 'element:addFromOut',
+                cursor: 'pointer',
+                fill: '#BED2A6',
+                width: '24',
+                height: '24',
+                rx: 4,
+                ry: 4
+            },
+            '.option .add image': {
+                x: 6,
+                y: 6,
+                pointerEvents: 'none'
             },
             '#outline':{
                 display: 'none',
@@ -464,10 +481,14 @@ function InitQuestion() {
 
         optionMarkup: [
             '<g class="option">',
-                '<rect/>',
+                '<rect class="back"/>',
                 // '<image class="btn-remove-option" xlink:href="img/board/btn-remove.svg"/>',
                 '<text class="subtitle"/>',
                 '<text class="title"/>',
+                '<g class="add">',
+                    '<rect/>',
+                    '<image width="12" height="12" xlink:href="img/board/arrowAdd.svg"/>',
+                '</g>',
             '</g>'
         ].join(''),
 
@@ -551,7 +572,7 @@ function InitQuestion() {
                 // console.log(option);
                 // console.log(index);
                 attrsUpdate[selector] = { transform: 'translate(0, ' + offsetY + ')', dynamic: true };
-                attrsUpdate[selector + ' rect'] = { height: optionHeight, dynamic: true };
+                attrsUpdate[selector + ' .back'] = { height: optionHeight, dynamic: true };
                 attrsUpdate[selector + ' .subtitle'] = { text: 'Option ' + (index + 1), dynamic: true, refY: 15 };
                 attrsUpdate[selector + ' .title'] = { text: joint.util.measureText(option.text), dynamic: true, refY: 33 };
 
@@ -1259,6 +1280,19 @@ app.AppView = joint.mvc.View.extend({
             editNodeWindow.SetListItems(elementView.model, this);
         }, this);
 
+        paper.on('element:addFromOut', function(elementView, evt, x, y) {
+            evt.stopPropagation();
+            let link = app.Factory.createLink();
+            let pos = elementView.model.get('position');
+            let question = this.addQuestion(pos.x + 530, pos.y);
+            link.addTo(this.graph);
+            link.source({id: elementView.model.get('id'), port: evt.target.parentNode.parentNode.getAttribute('option-id')});
+            link.target({id: question.get('id'), port: question.getPorts()[0].id});
+            this.updatePort();
+            // console.log(this.graph.getCells());
+            // console.log(evt);
+        }, this);
+
         paper.on('element:play', function(elementView, evt, x, y) {
             evt.stopPropagation();
             modePlay.openDialog(this.graph, elementView.model.id);
@@ -1327,9 +1361,9 @@ app.AppView = joint.mvc.View.extend({
     addQuestion: function(x, y) {
         let countQuestion = 0;
         let isStart = this.findModelStart() == null;
+        let question = app.Factory.createQuestion('<p>Empty</p>', isStart, x, y);
 
-
-        app.Factory.createQuestion('<p>Question</p>', isStart, x, y).addTo(this.graph);
+        question.addTo(this.graph);
 
         _.each(this.graph.getCells(), function(cell) {
             if(cell.get('type') == 'qad.Question'){
@@ -1337,6 +1371,8 @@ app.AppView = joint.mvc.View.extend({
                 cell.changeNumber(countQuestion);
             }
         });
+
+        return question;
     },
 
     findModelStart: function() {
@@ -1829,6 +1865,28 @@ function EditNodeWindow() {
             this.data.remove.push(id);
             // console.log(this.data);
         }
+    }
+}
+
+ControlCommentHistory();
+
+function ControlCommentHistory() {
+    let boardComment = document.querySelector('.board__comment');
+    let commentHistory = document.querySelector('.comment-history');
+    let commentHistoryBlock = document.querySelector('.comment-history__block');
+    
+    
+    boardComment.addEventListener('click', function () {
+        EmersionComment('block', 'translateX(0)');
+    });
+
+    commentHistory.addEventListener('click', function () {
+        EmersionComment('none', 'translateX(764px)');
+    });
+
+    function EmersionComment(active, position) {
+        commentHistory.style.display = active;
+        commentHistoryBlock.style.transform = position;
     }
 }
 
