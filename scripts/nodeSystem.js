@@ -178,13 +178,14 @@ function InitQuestion() {
             },
             '#header-control #startNode': {
                 event: 'element:setStart',
+                transform: 'translate(420, 0)',
                 cursor: 'pointer'
             },
             '#header-control #startNode text': {
                 // cursor: 'pointer',
                 fill: 'black',
                 fontFamily: 'Nunito-Black',
-                x: 426,
+                x: 6.5,
                 y: 24,
                 fontSize: 19,
             },
@@ -194,7 +195,7 @@ function InitQuestion() {
                 height: 35,
                 rx: '6',
                 ry: '6',
-                x: 420,
+                // x: 420,
                 y: 0,
 
                 fill: 'transparent',
@@ -203,13 +204,14 @@ function InitQuestion() {
             },
             '#header-control #endNode': {
                 event: 'element:setEnd',
+                transform: 'translate(420, 40)',
                 cursor: 'pointer'
             },
             '#header-control #endNode text': {
                 fill: 'black',
                 fontFamily: 'Nunito-Black',
-                x: 432,
-                y: 64,
+                x: 13,
+                y: 24,
                 fontSize: 19,
             },
             '#header-control #endNode rect': {
@@ -217,8 +219,8 @@ function InitQuestion() {
                 height: 35,
                 rx: '6',
                 ry: '6',
-                x: 420,
-                y: 40,
+                // x: 420,
+                // y: 40,
 
                 fill: 'transparent',
                 strokeWidth: 1,
@@ -226,13 +228,14 @@ function InitQuestion() {
             },
             '#header-control #add': {
                 event: 'element:add',
+                transform: 'translate(420, 81)',
                 cursor: 'pointer'
             },
             '#header-control #add rect': {
                 width: 61,
                 height: 35,
-                x: 420,
-                y: 81,
+                // x: 420,
+                // y: 81,
 
                 fill: 'transparent',
                 strokeWidth: 1,
@@ -243,8 +246,8 @@ function InitQuestion() {
             '#header-control #add text': {
                 fill: 'black',
                 fontFamily: 'Nunito-Black',
-                x: 427,
-                y: 104,
+                x: 7,
+                y: 24,
                 fontSize: 19,
             },
             '#header #number': {
@@ -637,6 +640,8 @@ function InitQuestion() {
             }.bind(this));
             this.set('options', obj.answers);
             this.set('question', obj.question);
+            this.set('comments', obj.comments);
+
             commandManager.storeBatchCommand();
 
         },
@@ -846,7 +851,8 @@ app.Factory = {
             options: [
                 // { id: 'yes', text: 'Yes', active: false },
                 // { id: 'no', text: 'No', active: false }
-            ]
+            ],
+            comments: '<div class="comment__item"> <div class="comment__item_img"></div><div class="comment__item_inner"><div class="comment__item_info"><p class="comment__item_name">Jane Cooper</p><p class="comment__item_time">15 feb at 14:30</p></div><div class="comment__wrap-text"><div class="comment__item_text"><p class="comment__user_text">Hey Marvin, please chang the call guidance instructions according to the new rules.</p><span class="comment__item_edit"></span><span class="comment__item_del"></span></div></div></div></div>'
         });
         // delete question.attributes.ports.groups.in;
         // console.log(this.graph);
@@ -948,23 +954,38 @@ function ModePlay() {
     let that = this;
     let dialog = document.querySelector('.mode-start');
     let dialogBlock = document.querySelector('.mode-start__block');
-    let answers = document.querySelector('.mode-start__answer');
-    let questionsText = document.querySelector('.mode-start__questions_text');
-    let close = document.querySelector('.mode-start__header_close');
+    let answers = dialogBlock.querySelector('.mode-start__answer');
+    let questionsText = dialogBlock.querySelector('.mode-start__questions_text');
+    let close = dialogBlock.querySelector('.mode-start__header_close');
+    let openEdit = dialogBlock.querySelector('.mode-start__header_open-edit');
+    let modelGeneral;
+    let appView;
 
     this.Initialize = function() {
         close.onclick = dialog.onclick = closeDialog;
+        openEdit.onclick = function() {
+            closeDialog();
+            OpenEdit();
+        }
     }
 
-    this.openDialog = function(graph, startID) {
-        let dataJSON = app.Factory.createDialogJSON(graph, startID);
+    this.openDialog = function(model, appV) {//graph, startID) {
+        modelGeneral = model;
+        appView = appV;
+        let dataJSON = app.Factory.createDialogJSON(appView.graph, model.id);
         // if(!ValidConnected()) return;
         ActivityDialog(true);
         RenderDialog(dataJSON);
+        // AdaptiveAnswerOperator();
+
 
         // function ValidConnected() {
         //     return dataJSON.nodes.length > 1 && dataJSON.links.length > 0;
         // }
+    }
+
+    function OpenEdit() {
+        editNodeWindow.SetListItems(modelGeneral, appView);
     }
 
     function closeDialog() {
@@ -996,6 +1017,10 @@ function ModePlay() {
         var elOption = CreateElement('div', 'mode-start__answer_item');
         elOption.innerHTML = option.text;
         let optionID = option.id;
+
+        if (elOption.textContent.length > 40) {
+            elOption.style.width = '100%';
+        }
 
         elOption.onclick = function() {
             OnOptionClick(optionID);
@@ -1295,8 +1320,8 @@ app.AppView = joint.mvc.View.extend({
 
         paper.on('element:play', function(elementView, evt, x, y) {
             evt.stopPropagation();
-            modePlay.openDialog(this.graph, elementView.model.id);
-            editNodeWindow.AdaptiveAnswerOperator();
+            modePlay.openDialog(elementView.model, this);
+            // editNodeWindow.AdaptiveAnswerOperator();
         }, this);
 
         paper.on('element:setStart', function(elementView, evt, x, y) {
@@ -1321,7 +1346,6 @@ app.AppView = joint.mvc.View.extend({
             this.addQuestion(pos.x + 530, pos.y);
         }, this);
     },
-
     updatePort: function() {
         let paper = this.paper;
         let dataFilter = {
@@ -1387,7 +1411,7 @@ app.AppView = joint.mvc.View.extend({
     },
 
     previewDialog: function() {
-        modePlay.openDialog(this.graph);
+        modePlay.openDialog(null, this);
     },
 
     clear: function() {
@@ -1423,7 +1447,7 @@ app.AppView = joint.mvc.View.extend({
 });
 
 joint.util.measureText = function(text) {
-    let mathes = [...text.matchAll(/<p>(.*?)<\/p>/g)];
+    let mathes = [...text.matchAll(/<(?:p|li)>(.*?)<\/(?:p|li)>/g)];
     text = mathes[0][1].replace(/<.*?>/g, "");
     var svgDocument = V('svg').node;
     var textElement = V('<text><tspan></tspan></text>').node;
@@ -1440,14 +1464,14 @@ joint.util.measureText = function(text) {
 
     let newText = text;
 
-    if(lineWidth > 220) {
+    if(lineWidth > 200) {
         let characters = text.split('');
         newText = '';
         for (let i = 0; i < characters.length; i++) {
             newText += characters[i];
             textNode.data = newText;
             lineWidth = textSpan.getBBox().width;
-            if(lineWidth >= 220) {
+            if(lineWidth >= 200) {
                 newText += '...';
                 break;
             }
@@ -1475,9 +1499,11 @@ function EditNodeWindow() {
     let сloseButton = nodeEditBlock.querySelector('.node-edit__header_btn');
     let saveButton = nodeEditBlock.querySelector('.node-edit__save');
     let playButton = nodeEditBlock.querySelector('.node-edit__play');
+    let commentsContainer = nodeEditBlock.querySelector('.comment__wrap-item');
     // let body = document.querySelector('body');
     let questionItem;
     let that = this;
+    let app;
 
     let controlData = new ControlData();
     // let textEditor = new TextEditor();
@@ -1488,6 +1514,7 @@ function EditNodeWindow() {
         QuestionItem();
         CloseWindowButton();
         PlayButton();
+        AddCommentEditNode();
 
         function CloneItem() {
             let itemOriginal = containerItem.querySelector('.node-edit__inner-item');
@@ -1501,7 +1528,7 @@ function EditNodeWindow() {
 
             function InitButton(className, text) {
                 let addButton = nodeEditBlock.querySelector(className);
-                console.log(addButton);
+                // console.log(addButton);
                 addButton.onclick = function() {
                     let answer = controlData.addAnswer(text);
                     AddItem(answer);
@@ -1515,26 +1542,32 @@ function EditNodeWindow() {
         }
 
         function CloseWindowButton() {
-            сloseButton.onclick = saveButton.onclick = nodeEdit.onclick = function() {
+            сloseButton.onclick = nodeEdit.onclick = function() {
                 controlData.ApplyEdit();
                 ShowWindow(false);
+            }
+
+            saveButton.onclick = function () {
+                controlData.ApplyEdit();
             }
         }
 
         function PlayButton() {
             playButton.onclick = function() {
-                // console.log('play');
-                modePlay.openDialog(modelGeneral.graph, modelGeneral.id);
-                that.AdaptiveAnswerOperator();
+                controlData.ApplyEdit();
+                modePlay.openDialog(modelGeneral, app);
+                // that.AdaptiveAnswerOperator();
             }
         }
     }
 
-    this.SetListItems = function(model, updatePort) {
-        controlData.Initialize(model, updatePort);
+    this.SetListItems = function(model, appView) {
         modelGeneral = model;
+        app = appView;
+        controlData.Initialize();
         // console.log(modelGeneral);
         Reset();
+        ApplyComments();
         GenerateItems();
         ShowWindow(true);
 
@@ -1544,6 +1577,10 @@ function EditNodeWindow() {
                 AddItem(answer);
             }.bind(this));
         }
+    }
+
+    function ApplyComments() {
+        commentsContainer.innerHTML = modelGeneral.get('comments');
     }
 
     function Reset() {
@@ -1584,23 +1621,6 @@ function EditNodeWindow() {
         nodeEdit.style.display = (isShow ? 'block' : 'none');
     }
 
-    this.AdaptiveAnswerOperator = function() {
-        let modeStartAnswer = document.querySelectorAll('.mode-start__answer_item');
-
-        for (let i = 0; i < modeStartAnswer.length; i++) {
-            let item = modeStartAnswer[i];
-
-            if (item.textContent.length > 40) {
-                item.style.width = '100%';
-            }
-        }
-        // console.log(modeStartAnswer[0].textContent.length);
-    }
-
-    // function ShowBorder(isShow) {
-    //     modelGeneral.changeOutlineВotted(isShow);
-    // }
-
     function InitEditItem(item, obj) {
 
         let containerItem = item.querySelector('.node-edit__item'),
@@ -1622,13 +1642,13 @@ function EditNodeWindow() {
 
         function InitEvent() {
             buttonCancel.onclick = function(e) {
-                console.log('buttonCancel');
+                // console.log('buttonCancel');
                 DisableEdit();
                 CancelEdit();
             }
 
             buttonSave.onclick = function(e) {
-                console.log('buttonSave');
+                // console.log('buttonSave');
                 DisableEdit();
             }
 
@@ -1644,7 +1664,7 @@ function EditNodeWindow() {
                 buttonSave.style.right = '75px';
                 buttonCancel.style.right = '5px';
                 ShowParameters();
-                console.log('onfocus');
+                // console.log('onfocus');
                 input.innerHTML = obj.text;
                 quill.on('text-change', ShowParameters);
             }
@@ -1654,7 +1674,7 @@ function EditNodeWindow() {
             }
 
             function documentClick(event) {
-                console.log("documentClick");
+                // console.log("documentClick");
                 let isClickInside = containerItem.contains(event.target);
 
                 if (!isClickInside) {
@@ -1726,9 +1746,9 @@ function EditNodeWindow() {
         }
 
         function cutText(text) {
-            console.log(text);
-            let mathes = [...text.matchAll(/<p>(.*?)<\/p>/g)];
-            console.log(mathes);
+            // console.log(text);
+            let mathes = [...text.matchAll(/<(?:p|li)>(.*?)<\/(?:p|li)>/g)];
+            // console.log(mathes);
             text = mathes[0][1].replace(/<.*?>/g, "");
             let lineHeight;
 
@@ -1832,18 +1852,19 @@ function EditNodeWindow() {
 
     function ControlData() {
         this.data = {question: {text: ''}};
-        let app;
 
-        this.Initialize = function(model, updatePort) {
+
+        this.Initialize = function() {
             this.data = {
-                question: JSON.parse(JSON.stringify(model.get('question'))),
-                answers: JSON.parse(JSON.stringify(model.get('options'))),
+                question: JSON.parse(JSON.stringify(modelGeneral.get('question'))),
+                answers: JSON.parse(JSON.stringify(modelGeneral.get('options'))),
+                comments: '',
                 remove: []
             }
-            app = updatePort;
         }
 
         this.ApplyEdit = function() {
+            this.data.comments = commentsContainer.innerHTML;
             modelGeneral.applyEdit(this.data);
             app.updatePort();
         }
@@ -1866,6 +1887,73 @@ function EditNodeWindow() {
             // console.log(this.data);
         }
     }
+
+    function AddCommentEditNode() {
+        let comment = document.querySelector('.comment');
+        let commentText = comment.querySelector('.comment__text');
+        let commentAddComment = comment.querySelector('.comment__add-comment');
+        let commentsWrap = comment.querySelector('.comment__wrap-item');
+        let cloneItem = comment.querySelector('.comment__item').cloneNode(true);
+        let cloneTextItem = comment.querySelector('.comment__item_text').cloneNode(true);
+        let chatHistory = document.querySelector('.node-edit__block');
+
+        commentText.onclick = function () {
+            ActiveButton('30px', '54px');
+            document.addEventListener('click', DocumentClick);
+        };
+        commentAddComment.onclick = function () {
+            if (commentText.value.length < 1) {
+                commentText.focus();
+                return;
+            }
+            if(commentsWrap.children.length == 1) {
+                CloneComment();
+                return;
+            }
+            AddCommentUser();
+        };
+
+        function CloneComment() {
+            let cloned = cloneItem.cloneNode(true);
+
+            commentsWrap.appendChild(cloned);
+            cloned.querySelector('.comment__item_img').style.background = 'url(img/board/Ellipse-2.png) center/cover no-repeat';
+            cloned.querySelector('.comment__item_name').innerHTML = 'Marvin Cooper';
+            cloned.querySelector('.comment__item_text').innerHTML = commentText.value;
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            ClearInputComment();
+        }
+
+        function AddCommentUser() {
+            let clonedText = cloneTextItem.cloneNode(true);
+            let wrapText = commentsWrap.lastChild.querySelector('.comment__wrap-text');
+
+            wrapText.appendChild(clonedText);
+            wrapText.lastChild.querySelector('.comment__user_text').innerHTML = commentText.value;
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            ClearInputComment();
+        }
+
+        function ClearInputComment() {
+            commentText.value = '';
+            commentText.style.height = '52px';
+            commentText.focus();
+        }
+
+        function DocumentClick(event) {
+            let isClickInside = commentText.parentNode.contains(event.target);
+
+            if (!isClickInside) {
+                ActiveButton('-120px', '0');
+            }
+        }
+
+        function ActiveButton(rightNew, marginNew) {
+            commentAddComment.style.right = rightNew;
+            commentText.style.marginBottom = marginNew;
+            document.removeEventListener('click', DocumentClick);
+        }
+    }
 }
 
 ControlCommentHistory();
@@ -1874,8 +1962,8 @@ function ControlCommentHistory() {
     let boardComment = document.querySelector('.board__comment');
     let commentHistory = document.querySelector('.comment-history');
     let commentHistoryBlock = document.querySelector('.comment-history__block');
-    
-    
+
+
     boardComment.addEventListener('click', function () {
         EmersionComment('block', 'translateX(0)');
     });
@@ -1889,6 +1977,8 @@ function ControlCommentHistory() {
         commentHistoryBlock.style.transform = position;
     }
 }
+
+
 
 
 

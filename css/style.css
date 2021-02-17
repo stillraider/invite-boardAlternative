@@ -42,6 +42,8 @@ body {
   -ms-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  overflow-y: inherit !important;
+  background: inherit !important;
 }
 
 input,
@@ -2619,7 +2621,7 @@ svg {
 }
 
 .node-edit__save {
-  margin-top: 16px;
+  margin-top: 24px;
 }
 
 .node-edit__subtitle-text {
@@ -2699,6 +2701,9 @@ svg {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
 .mode-start__header_text {
@@ -2706,10 +2711,30 @@ svg {
   color: #000000;
 }
 
+.mode-start__header_open-edit {
+  position: relative;
+  width: 44px;
+  height: 35px;
+  background: #1D85D0;
+  border-radius: 4px;
+}
+
+.mode-start__header_open-edit::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  -webkit-transform: translate(-10px, -10px);
+      -ms-transform: translate(-10px, -10px);
+          transform: translate(-10px, -10px);
+  background: url(../img/board/clarity_design-line.svg) center/cover no-repeat;
+}
+
 .mode-start__header_close {
   width: 18px;
   height: 16px;
-  margin-left: auto;
   background: url(../img/board/cross.svg) center/contain no-repeat;
 }
 
@@ -2721,7 +2746,7 @@ svg {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  margin-bottom: 16px;
+  margin-bottom: 30px;
 }
 
 .mode-start__questions {
@@ -2732,6 +2757,15 @@ svg {
   font-size: 24px;
   line-height: 28px;
   color: #000000;
+}
+
+.mode-start__questions_text ul li::before {
+  content: '\2022';
+  margin-right: 6px;
+}
+
+.mode-start__questions_text ol li {
+  margin-left: 24px;
 }
 
 .mode-start__answer {
@@ -2820,7 +2854,7 @@ svg {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .comment__item_name,
@@ -2846,11 +2880,6 @@ svg {
   color: #B9B9B9;
 }
 
-.comment__item_text,
-.comment-history__item_text {
-  font-family: "Roboto-Regular";
-}
-
 .comment__item_del,
 .comment-history__item_del {
   right: -70px;
@@ -2865,7 +2894,7 @@ svg {
 .comment-history__item_del {
   display: block;
   position: absolute;
-  top: 22px;
+  top: 0;
   -webkit-transition: right 0.3s cubic-bezier(1, 0, 0.85, 0.35);
   -o-transition: right 0.3s cubic-bezier(1, 0, 0.85, 0.35);
   transition: right 0.3s cubic-bezier(1, 0, 0.85, 0.35);
@@ -2898,7 +2927,39 @@ svg {
   overflow: hidden;
 }
 
-.comment__input {
+.comment__item_text {
+  position: relative;
+}
+
+.comment__user_text {
+  line-height: 22px;
+  font-family: "Roboto-Regular";
+}
+
+.comment__title {
+  position: relative;
+  padding: 12px;
+}
+
+.comment__title p {
+  text-align: center;
+  font-family: Roboto-Regular;
+  font-size: 23px;
+  line-height: 28px;
+  color: black;
+}
+
+.comment__title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: #f0e6e6;
+}
+
+.comment__textarea {
   position: relative;
   padding: 32px 31px;
   border-top: 1px solid #F0E6E6;
@@ -2908,18 +2969,24 @@ svg {
   background: #F6F6F6;
 }
 
-.comment__input input {
+.comment__textarea textarea {
   width: 100%;
+  height: 52px;
   padding: 14px 19px;
+  -webkit-transition: margin-bottom .35s ease-in-out;
+  -o-transition: margin-bottom .35s ease-in-out;
+  transition: margin-bottom .35s ease-in-out;
   border: 1px solid #F0E6E6;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+  overflow-y: hidden;
   font-family: "Roboto-Regular";
   font-size: 18px;
   line-height: 24px;
   color: #7D7D7D;
   background: #FFFFFF;
   caret-color: #145AD5;
+  resize: none;
 }
 
 .comment__add-comment {
@@ -3012,6 +3079,11 @@ svg {
 
 .joint-paper-scroller.joint-theme-modern {
   background: #F2F2F2 !important;
+}
+
+.ql-editor ol,
+.ql-editor ul {
+  padding-left: 0;
 }
 
 .excretionItem {
@@ -12792,6 +12864,9 @@ body {
 }
 
 .ql-toolbar.ql-snow {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   position: absolute;
   top: -43px;
   z-index: 50;
@@ -12813,7 +12888,6 @@ body {
 .ql-link,
 .ql-formats:first-child,
 .ql-formats:last-child,
-.ql-formats:nth-child(3),
 .ql-formats:nth-child(2) .ql-link {
   display: none;
 }
