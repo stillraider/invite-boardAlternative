@@ -660,7 +660,6 @@ function ControlCustomers() {
 
                 ChangeWorkflowName = function(input) {
                     clickItem.querySelector('.info-name').innerText = input.value;
-
                 }
 
                 DeleteWorkflowItem = function() {

@@ -852,7 +852,7 @@ app.Factory = {
                 // { id: 'yes', text: 'Yes', active: false },
                 // { id: 'no', text: 'No', active: false }
             ],
-            comments: '<div class="comment__item"> <div class="comment__item_img"></div><div class="comment__item_inner"><div class="comment__item_info"><p class="comment__item_name">Jane Cooper</p><p class="comment__item_time">15 feb at 14:30</p></div><div class="comment__wrap-text"><div class="comment__item_text"><p class="comment__user_text">Hey Marvin, please chang the call guidance instructions according to the new rules.</p><span class="comment__item_edit"></span><span class="comment__item_del"></span></div></div></div></div>'
+            comments: null
         });
         // delete question.attributes.ports.groups.in;
         // console.log(this.graph);
@@ -1499,13 +1499,14 @@ function EditNodeWindow() {
     let сloseButton = nodeEditBlock.querySelector('.node-edit__header_btn');
     let saveButton = nodeEditBlock.querySelector('.node-edit__save');
     let playButton = nodeEditBlock.querySelector('.node-edit__play');
-    let commentsContainer = nodeEditBlock.querySelector('.comment__wrap-item');
+
     // let body = document.querySelector('body');
     let questionItem;
     let that = this;
     let app;
 
     let controlData = new ControlData();
+    let commentEditNode = new CommentEditNode();
     // let textEditor = new TextEditor();
 
     this.Initialize = function() {
@@ -1514,10 +1515,11 @@ function EditNodeWindow() {
         QuestionItem();
         CloseWindowButton();
         PlayButton();
-        AddCommentEditNode();
+        commentEditNode.Initialize();
 
         function CloneItem() {
             let itemOriginal = containerItem.querySelector('.node-edit__inner-item');
+
             cloneItemMain = itemOriginal.cloneNode(true);
             Reset();
         }
@@ -1565,13 +1567,15 @@ function EditNodeWindow() {
         modelGeneral = model;
         app = appView;
         controlData.Initialize();
+        commentEditNode.UpdateEvents();
         // console.log(modelGeneral);
         Reset();
-        ApplyComments();
+        // ApplyComments();
         GenerateItems();
         ShowWindow(true);
 
         InitEditItem(questionItem, controlData.data.question);
+        FocusInput();
         function GenerateItems() {
             _.each(controlData.data.answers, function(answer) {
                 AddItem(answer);
@@ -1579,8 +1583,20 @@ function EditNodeWindow() {
         }
     }
 
-    function ApplyComments() {
-        commentsContainer.innerHTML = modelGeneral.get('comments');
+    function FocusInput() {
+        let editors = document.querySelectorAll('#editor');
+        if(editors.length == 1) {
+            let quill = Quill.find(editors[0]);
+
+
+            setTimeout(() => {
+                quill.focus();
+                setTimeout(() => {
+                    quill.setSelection(quill.getLength(), 0);
+                }, 0)
+            }, 0)
+            // quill.setSelection(0, 1, "user");
+        }
     }
 
     function Reset() {
@@ -1864,7 +1880,7 @@ function EditNodeWindow() {
         }
 
         this.ApplyEdit = function() {
-            this.data.comments = commentsContainer.innerHTML;
+            this.data.comments = commentEditNode.GetTextHTML();
             modelGeneral.applyEdit(this.data);
             app.updatePort();
         }
@@ -1884,53 +1900,124 @@ function EditNodeWindow() {
         this.removeAnswer = function(id) {
             this.data.answers = _.without(this.data.answers, _.find(this.data.answers, { id: id }));
             this.data.remove.push(id);
-            // console.log(this.data);
         }
     }
 
-    function AddCommentEditNode() {
+    function CommentEditNode() {
+        let markupItem = [
+            '<div class="comment__item">',
+                '<div class="comment__item_img"></div>',
+                '<div class="comment__item_inner">',
+                    '<div class="comment__item_info">',
+                        '<p class="comment__item_name">Jane Cooper</p>',
+                        '<p class="comment__item_time">15 feb at 14:30</p>',
+                    '</div>',
+                    '<div class="comment__wrap-text">',
+                    '</div>',
+                '</div>',
+            '</div>'
+        ].join('');
+
+        let markupComment = [
+            '<div class="comment__item_text">',
+                '<input type="text" class="comment__text-edit" autocomplete="off">',
+                '<p class="comment__user_text">Hey Marvin, please chang the call guidance instructions according to the new rules.</p>',
+                '<span class="comment__item_edit"></span>',
+                '<span class="comment__item_del"></span>',
+            '</div>'
+        ].join('');
+
         let comment = document.querySelector('.comment');
         let commentText = comment.querySelector('.comment__text');
-        let commentAddComment = comment.querySelector('.comment__add-comment');
-        let commentsWrap = comment.querySelector('.comment__wrap-item');
-        let cloneItem = comment.querySelector('.comment__item').cloneNode(true);
-        let cloneTextItem = comment.querySelector('.comment__item_text').cloneNode(true);
-        let chatHistory = document.querySelector('.node-edit__block');
+        let addComment = comment.querySelector('.comment__add-comment');
+        let commentsContainer = nodeEditBlock.querySelector('.comment__wrap-item');
+        let prevCommentEdit;
 
-        commentText.onclick = function () {
-            ActiveButton('30px', '54px');
-            document.addEventListener('click', DocumentClick);
-        };
-        commentAddComment.onclick = function () {
-            if (commentText.value.length < 1) {
-                commentText.focus();
-                return;
+        this.Initialize = function() {
+            InitInputMessage();
+
+            addComment.onclick = function () {
+                if (commentText.value.length < 1) {
+                    commentText.focus();
+                    return;
+                }
+                if(commentsContainer.children.length == 1) {
+                    CloneComment();
+                    // return;
+                }
+                AddCommentUser();
+            };
+        }
+
+        this.UpdateEvents = function() {
+            ApplyComments();
+            ApplyFindItems();
+
+            function ApplyComments() {
+                let comments = modelGeneral.get('comments');
+
+                if(!comments) {
+                    commentsContainer.innerHTML = markupItem;
+                    commentsContainer.querySelector('.comment__wrap-text').innerHTML = markupComment;
+                    return;
+                }
+
+                commentsContainer.innerHTML = comments;
             }
-            if(commentsWrap.children.length == 1) {
-                CloneComment();
-                return;
+
+            function ApplyFindItems() {
+                let itemTexts = commentsContainer.querySelectorAll('.comment__item_text');
+
+                for (let i = 0; i < itemTexts.length; i++)
+                    InitClickOnEdit(itemTexts[i]);
             }
-            AddCommentUser();
-        };
+        }
+
+        this.GetTextHTML = function() {
+            return commentsContainer.innerHTML;
+        }
+
+        function InitInputMessage() {
+            commentText.onclick = function () {
+                ActiveButton('30px', '54px');
+                document.addEventListener('click', DocumentClick);
+            }
+
+            function DocumentClick(event) {
+                let isClickInside = commentText.parentNode.contains(event.target);
+
+                if (!isClickInside) {
+                    ActiveButton('-120px', '0');
+                }
+
+            }
+
+            function ActiveButton(rightNew, marginNew) {
+                addComment.style.right = rightNew;
+                commentText.style.marginBottom = marginNew;
+                document.removeEventListener('click', DocumentClick);
+            }
+        }
 
         function CloneComment() {
-            let cloned = cloneItem.cloneNode(true);
 
-            commentsWrap.appendChild(cloned);
+            commentsContainer.appendChild(document.createRange().createContextualFragment(markupItem));
+            let cloned = commentsContainer.lastChild;
+
             cloned.querySelector('.comment__item_img').style.background = 'url(img/board/Ellipse-2.png) center/cover no-repeat';
             cloned.querySelector('.comment__item_name').innerHTML = 'Marvin Cooper';
-            cloned.querySelector('.comment__item_text').innerHTML = commentText.value;
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-            ClearInputComment();
         }
 
         function AddCommentUser() {
-            let clonedText = cloneTextItem.cloneNode(true);
-            let wrapText = commentsWrap.lastChild.querySelector('.comment__wrap-text');
+            let wrapText = commentsContainer.lastChild.querySelector('.comment__wrap-text');
+            wrapText.appendChild(document.createRange().createContextualFragment(markupComment));
+            let clonedText = wrapText.lastChild;
 
-            wrapText.appendChild(clonedText);
-            wrapText.lastChild.querySelector('.comment__user_text').innerHTML = commentText.value;
-            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            clonedText.querySelector('.comment__user_text').innerHTML = commentText.value;
+
+            InitClickOnEdit(clonedText);
+            CommentRemoveItem();
             ClearInputComment();
         }
 
@@ -1938,20 +2025,57 @@ function EditNodeWindow() {
             commentText.value = '';
             commentText.style.height = '52px';
             commentText.focus();
+            nodeEditBlock.scrollTop = nodeEditBlock.scrollHeight;
         }
 
-        function DocumentClick(event) {
-            let isClickInside = commentText.parentNode.contains(event.target);
+        function InitClickOnEdit(item) {
+            let userText = item.querySelector('.comment__user_text');
+            let textEdit = item.querySelector('.comment__text-edit');
+            let edit = item.querySelector('.comment__item_edit');
+            let isShowEditor = false;
+            console.log(edit);
 
-            if (!isClickInside) {
-                ActiveButton('-120px', '0');
+            edit.onclick = function () {
+                if (prevCommentEdit == edit) {
+                    prevCommentEdit = null;
+                }else if (prevCommentEdit != null) {
+                    prevCommentEdit.onclick();
+                    prevCommentEdit = edit;
+                }else if (prevCommentEdit == null) {
+                    prevCommentEdit = edit;
+                }
+                isShowEditor = !isShowEditor;
+                edit.classList.toggle('switcherIconApply');
+
+                if (isShowEditor) {
+                    SwitchVisivbleEdit('block');
+                    textEdit.value = userText.innerText;
+                    textEdit.focus();
+                }else {
+                    SwitchVisivbleEdit('none');
+                    userText.innerText = textEdit.value;
+                }
+
+                function SwitchVisivbleEdit(infoDisplay) {
+                    textEdit.style.display = infoDisplay;
+                }
             }
         }
 
-        function ActiveButton(rightNew, marginNew) {
-            commentAddComment.style.right = rightNew;
-            commentText.style.marginBottom = marginNew;
-            document.removeEventListener('click', DocumentClick);
+    }
+
+    function CommentRemoveItem() {
+        let itemDel = document.querySelectorAll('.comment__item_del');
+
+        for (let i = 0; i < itemDel.length; i++) {
+            let item = itemDel[i];
+            let itemText = item.closest('.comment__item_text');
+
+            itemDel[i].addEventListener('click', changeStatus);
+
+            function changeStatus() {
+                itemText.remove();
+            }
         }
     }
 }
