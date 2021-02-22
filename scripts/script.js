@@ -1,3 +1,8 @@
+let customers = document.querySelector('.customers');
+let header = document.querySelector('.header');
+let navigation = document.querySelector('.navigation');
+let inviteBoard = document.querySelector('.invite-board');
+
 BoardManager();
 NavigationBoard();
 OpenModalWindow();
@@ -18,8 +23,9 @@ function BoardManager() {
         let lastOpenedRole;
 
         this.InitDropdowns = function() {
-            let selectHeader = document.querySelectorAll('.select__header');
-            let selectItem = document.querySelectorAll('.select__item');
+            let select = document.querySelector('.select__item');
+            let selectHeader = select.querySelectorAll('.select__header');
+            let selectItem = select.querySelectorAll('.select__item');
             let selectHeaderItem;
             let parentHeaderItem;
 
@@ -76,7 +82,7 @@ function BoardManager() {
     }
 
     function SwitcherContent() {
-        let contents = document.querySelector('.invite-board__container').children;
+        let contents = inviteBoard.querySelector('.invite-board__container').children;
         let tabs = contents[0].querySelectorAll('.invite-board__tabs_item');
         let currentTabs = tabs[0];
         let currentContent = contents[1];
@@ -225,11 +231,12 @@ function BoardManager() {
     }
 
     function NewUserItemsManager() {
+        let inviteUser = document.querySelector('.invite-user');
+
         AddItemButton();
         RemoveUserItem();
 
         function AddItemButton() {
-            let inviteUser = document.querySelector('.invite-user');
             let button = inviteUser.querySelector('.invite-user__add-item');
             let content = inviteUser.querySelector('.invite-user__inner-content');
             let original = inviteUser.querySelector('.invite-user__item');
@@ -279,7 +286,7 @@ function BoardManager() {
         }
 
         function RemoveUserItem() {
-            let inviteUserItem = document.querySelectorAll('.invite-user__item_remove');
+            let inviteUserItem = inviteUser.querySelectorAll('.invite-user__item_remove');
 
             for (let i = 0; i < inviteUserItem.length; i++) {
                 let item = inviteUserItem[i];
@@ -294,19 +301,13 @@ function BoardManager() {
 }
 
 function NavigationBoard() {
-    // let disclosureNavigation = new ControlMenu();
-    // let controlSubmenu = new ControlSubmenu();
-
     ControlMenu();
     ManagementActive();
 
     function ControlMenu() {
-        // let that = this;
-        let headerBurger = document.querySelector('.header__burger');
-        let navList = document.querySelector('.navigation__list');
+        let headerBurger = header.querySelector('.header__burger');
+        let navList = navigation.querySelector('.navigation__list');
         let navIcon = navList.querySelector('.navigation__icon-items');
-        // let naviItems = navList.querySelectorAll('.navigation__list_items');
-        let inviteBoard = document.querySelector('.invite-board');
 
         inviteBoard.style.marginLeft = navIcon.offsetWidth + 'px';
 
@@ -314,15 +315,12 @@ function NavigationBoard() {
 
         function ToggleMenu() {
             let navIconWidth = navIcon.offsetWidth;
-            // let naviItemsWidth = naviItems.offsetWidth;
             let navListWidth = navList.offsetWidth;
 
             if (navList.parentNode.offsetWidth < navListWidth) {
                 navList.parentNode.style.width = navListWidth + 'px';
                 inviteBoard.style.marginLeft = navListWidth + 'px';
-            }
-
-            else {
+            }else {
                 navList.parentNode.style.width = navIconWidth + 'px';
                 inviteBoard.style.marginLeft = navIconWidth + 'px';
             }
@@ -409,16 +407,13 @@ function NavigationBoard() {
     // }
 
     function ManagementActive() {
-        let manage = document.querySelector('.manage');
-        let workflows = document.querySelector('.workflows');
-        let user = document.querySelector('.user');
-        let header = document.querySelector('.header');
-        let navigation = document.querySelector('.navigation');
-        let inviteBoard = document.querySelector('.invite-board');
-        let customersbutton = document.querySelector('.customers__button');
+        let manage = navigation.querySelector('.manage');
+        let workflows = navigation.querySelector('.workflows');
+        let user = navigation.querySelector('.user');
+        let customersbutton = customers.querySelector('.customers__button');
         let board = document.querySelector('.board');
         let boardHome = board.querySelector('.board__home');
-        let dashboard = document.querySelector('.dashboard');
+        let dashboard = navigation.querySelector('.dashboard');
 
         manage.addEventListener('click', function () {
             ChangeContent('block', 'none', 'none', 'none', 'none');
@@ -454,12 +449,11 @@ function NavigationBoard() {
 
         function ChangeContent(manageUse, workUse, inviteUse, boardUse, dashboardUse) {
             let management = document.querySelector('.management');
-            let inviteContainer = document.querySelector('.invite-board__container');
-            let tableWorkflows = document.querySelector('.customers');
+            let inviteContainer = inviteBoard.querySelector('.invite-board__container');
             let dashboards = document.querySelector('.dashboards');
 
             management.style.display = manageUse;
-            tableWorkflows.style.display = workUse;
+            customers.style.display = workUse;
             inviteContainer.style.display = inviteUse;
             board.style.display = boardUse;
             dashboards.style.display = dashboardUse;
@@ -471,7 +465,7 @@ function OpenModalWindow() {
     UserMenuHeader();
 
     function UserMenuHeader() {
-        let user = document.querySelector('.header__headline_user');
+        let user = header.querySelector('.header__headline_user');
         let userMenu = document.querySelector('.usermenu');
 
         user.addEventListener('click', function() {
@@ -542,7 +536,7 @@ function OpenModalWindow() {
     ModalWindowWorkflows();
 
     function ModalWindowWorkflows() {
-        let tableItem = document.querySelectorAll('.customers__item_info');
+        let tableItem = customers.querySelectorAll('.customers__item_info');
         let windowWorkFlows = document.querySelector('.window-workFlows');
 
         for (let i = 0; i < tableItem.length; i++) {
@@ -583,8 +577,9 @@ function HeaderActions() {
     ActiveCalendar();
 
     function ControlHeaderMode() {
-        let modeItem = document.querySelectorAll('.header__mode_item');
-        let modeElem = document.querySelector('.header__mode_elem');
+        let headerMode = header.querySelector('.header__mode');
+        let modeItem = headerMode.querySelectorAll('.header__mode_item');
+        let modeElem = headerMode.querySelector('.header__mode_elem');
 
         for (let i = 0; i < modeItem.length; i++) {
             let item = modeItem[i];
@@ -601,7 +596,7 @@ function HeaderActions() {
         }
 
         modeElem.addEventListener('click', function () {
-            let modeWrapper = document.querySelector('.header__mode-wrapper');
+            let modeWrapper = header.querySelector('.header__mode-wrapper');
 
             modeWrapper.style.display = 'block';
         });
@@ -616,8 +611,9 @@ function HeaderActions() {
     }
 
     function ActiveCalendar() {
-        let headerCalendar = document.querySelector('.header__calendar');
-        let calendar = document.querySelector('#calendar');
+        let headerWrapCalendar = header.querySelector('.header__wrapper-search');
+        let headerCalendar = headerWrapCalendar.querySelector('.header__calendar');
+        let calendar = headerWrapCalendar.querySelector('#calendar');
 
         headerCalendar.addEventListener('click', function () {
             calendar.classList.toggle('calendarVisible');
@@ -626,8 +622,8 @@ function HeaderActions() {
 }
 
 function ControlCustomers() {
-    let customersContent = document.querySelector('.customers__content');
-    let customersMenu = customersContent.querySelector('.customers__menu');
+    let customersContent = customers.querySelector('.customers__content');
+    let customersMenu = customers.querySelector('.customers__menu');
 
     ControlMenuCastomers();
     ActivePopUp();
@@ -675,11 +671,12 @@ function ControlCustomers() {
     }
 
     function ActivePopUp() {
-        let customersMenuItem = customersContent.querySelectorAll('.customers__menu_item');
-        let headerСontainer = document.querySelector('.header__container');
-        let popUp = document.querySelectorAll('.pop-up');
-        let popUpCancel = document.querySelectorAll('.pop-up__cancel');
-        let popUpApply = document.querySelectorAll('.pop-up__apply');
+        let customersMenuItem = customers.querySelectorAll('.customers__menu_item');
+        let headerСontainer = header.querySelector('.header__container');
+        let wrapContent = customers.querySelector('.customers__wrap-content');
+        let popUp = wrapContent.querySelectorAll('.pop-up');
+        let popUpCancel = wrapContent.querySelectorAll('.pop-up__cancel');
+        let popUpApply = wrapContent.querySelectorAll('.pop-up__apply');
 
         for (let i = 0; i < customersMenuItem.length; i++) {
             let item = customersMenuItem[i];
@@ -715,7 +712,6 @@ function ControlCustomers() {
     }
 
     function SwitchContentCustomers() {
-        let customers = document.querySelector('.customers');
         let customersSwitchAll = customers.querySelectorAll('.customers__switch_item');
         let customersWrap = customers.querySelectorAll('.customers__wrapper');
         let prevItem = 2;

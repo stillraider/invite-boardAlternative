@@ -6,8 +6,8 @@ var commandManager;
 InitQuestion();
 
 function InitQuestion() {
-    let headerHeight = 23;
-    let bodyHeight = 71;
+    // let headerHeight = 23;
+    // let bodyHeight = 71;
     let optionHeight = 50;
     let questionHeight = 170;
     let paddingBottom = 100;
@@ -283,8 +283,9 @@ function InitQuestion() {
                 event: 'element:delete',
                 refDx: -17,
                 y: 7,
-                width: 10,
-                height: 9,
+                x: -32,
+                width: 16,
+                height: 16,
                 cursor: 'pointer'
             },
             '#header #untitle': {
@@ -594,7 +595,6 @@ function InitQuestion() {
                     this.portProp(option.id, 'attrs/.back/pointerEvents', option.active ? 'none' : 'all');
                 }
 
-
             }.bind(this));
             this.attr(attrsUpdate);
             this.autoresize();
@@ -643,7 +643,6 @@ function InitQuestion() {
             this.set('comments', obj.comments);
 
             commandManager.storeBatchCommand();
-
         },
 
         addOption: function(option) {
@@ -946,7 +945,6 @@ app.Factory = {
 };
 
 
-
 let modePlay = new ModePlay();
 modePlay.Initialize();
 
@@ -976,7 +974,6 @@ function ModePlay() {
         // if(!ValidConnected()) return;
         ActivityDialog(true);
         RenderDialog(dataJSON);
-        // AdaptiveAnswerOperator();
 
 
         // function ValidConnected() {
@@ -1321,7 +1318,6 @@ app.AppView = joint.mvc.View.extend({
         paper.on('element:play', function(elementView, evt, x, y) {
             evt.stopPropagation();
             modePlay.openDialog(elementView.model, this);
-            // editNodeWindow.AdaptiveAnswerOperator();
         }, this);
 
         paper.on('element:setStart', function(elementView, evt, x, y) {
@@ -1490,7 +1486,6 @@ editNodeWindow.Initialize();
 function EditNodeWindow() {
     let modelGeneral;
     let cloneItemMain;
-    // let countItems;
     let lastSelect;
     let widthTextOriginal = 0;
     let nodeEdit = document.querySelector('.node-edit');
@@ -1500,14 +1495,11 @@ function EditNodeWindow() {
     let saveButton = nodeEditBlock.querySelector('.node-edit__save');
     let playButton = nodeEditBlock.querySelector('.node-edit__play');
 
-    // let body = document.querySelector('body');
     let questionItem;
-    let that = this;
     let app;
 
     let controlData = new ControlData();
     let commentEditNode = new CommentEditNode();
-    // let textEditor = new TextEditor();
 
     this.Initialize = function() {
         CloneItem();
@@ -1539,7 +1531,7 @@ function EditNodeWindow() {
         }
 
         function QuestionItem() {
-            questionItem = document.querySelector('.node-edit__operator')
+            questionItem = nodeEditBlock.querySelector('.node-edit__operator')
                                 .querySelector('.node-edit__inner-item');
         }
 
@@ -1558,7 +1550,6 @@ function EditNodeWindow() {
             playButton.onclick = function() {
                 controlData.ApplyEdit();
                 modePlay.openDialog(modelGeneral, app);
-                // that.AdaptiveAnswerOperator();
             }
         }
     }
@@ -1570,7 +1561,6 @@ function EditNodeWindow() {
         commentEditNode.UpdateEvents();
         // console.log(modelGeneral);
         Reset();
-        // ApplyComments();
         GenerateItems();
         ShowWindow(true);
 
@@ -1731,7 +1721,6 @@ function EditNodeWindow() {
                     newHeight += child.offsetHeight;
                 }.bind(this));
             }
-
             containerItem.style.height = newHeight + 'px';
         }
 
@@ -1841,7 +1830,6 @@ function EditNodeWindow() {
                             lineText = lineText.slice(0,-1);
                         }
                     }
-
                     return textFinally + lineText + '...';
                 }
                 return text + (mathes.length > 1 ? '...' : '');
@@ -1943,7 +1931,6 @@ function EditNodeWindow() {
                 }
                 if(commentsContainer.children.length == 1) {
                     CloneComment();
-                    // return;
                 }
                 AddCommentUser();
             };
@@ -1989,7 +1976,6 @@ function EditNodeWindow() {
                 if (!isClickInside) {
                     ActiveButton('-120px', '0');
                 }
-
             }
 
             function ActiveButton(rightNew, marginNew) {
@@ -2000,7 +1986,6 @@ function EditNodeWindow() {
         }
 
         function CloneComment() {
-
             commentsContainer.appendChild(document.createRange().createContextualFragment(markupItem));
             let cloned = commentsContainer.lastChild;
 
@@ -2061,7 +2046,6 @@ function EditNodeWindow() {
                 }
             }
         }
-
     }
 
     function CommentRemoveItem() {
@@ -2083,10 +2067,10 @@ function EditNodeWindow() {
 ControlCommentHistory();
 
 function ControlCommentHistory() {
-    let boardComment = document.querySelector('.board__comment');
-    let commentHistory = document.querySelector('.comment-history');
-    let commentHistoryBlock = document.querySelector('.comment-history__block');
-
+    let board = document.querySelector('.board');
+    let boardComment = board.querySelector('.board__comment');
+    let commentHistory = board.querySelector('.comment-history');
+    let commentHistoryBlock = board.querySelector('.comment-history__block');
 
     boardComment.addEventListener('click', function () {
         EmersionComment('block', 'translateX(0)');
